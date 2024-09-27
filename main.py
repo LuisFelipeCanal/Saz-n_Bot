@@ -35,6 +35,13 @@ def show_menu(menu):
     for index, row in menu.iterrows():
         st.markdown(f"- **{row['Plato']}**: {row['Descripción']} - Precio: S/{row['Precio']}")
 
+
+# Función para mostrar el menú en un formato más amigable
+def format_menu(menu):
+    if menu.empty:
+        return "No hay platos disponibles."
+    return "\n".join([f"{row['Plato']}: {row['Descripción']} - Precio: S/{row['Precio']}" for idx, row in menu.iterrows()])
+
 # Cargar menú y distritos (asegúrate de que los archivos CSV existen)
 menu = load_menu("carta.csv")  # Archivo 'menu.csv' debe tener columnas: Plato, Descripción, Precio
 districts = load_districts("distritos.csv")  # Archivo 'distritos.csv' debe tener una columna: Distrito
@@ -47,11 +54,11 @@ initial_state = [
     {"role": "system", "content": "You are SazónBot. A friendly assistant helping customers with their lunch orders."},
     {
         "role": "assistant",
-        "content": f"👨‍🍳¿Qué te puedo ofrecer?",
+        "content": f"👨‍🍳¿Qué te puedo ofrecer?\n\nEste es el menú del día:\n{format_menu(menu)}",
     },
 ]
 
-show_menu(menu)
+
 
 # Función para registrar los pedidos en un archivo
 def save_order(order, total_price):

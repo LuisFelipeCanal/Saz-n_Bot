@@ -39,8 +39,11 @@ def show_menu(menu):
 menu = load_menu("carta.csv")  # Archivo 'menu.csv' debe tener columnas: Plato, Descripción, Precio
 districts = load_districts("distritos.csv")  # Archivo 'distritos.csv' debe tener una columna: Distrito
 
+
 # Función para mostrar el menú en un formato más amigable
 def format_menu(menu):
+    if menu.empty:
+        return "No hay platos disponibles."
     return "\n".join([f"{row['Plato']}: {row['Descripción']} - Precio: S/{row['Precio']}" for idx, row in menu.iterrows()])
 
 # Estado inicial del chatbot

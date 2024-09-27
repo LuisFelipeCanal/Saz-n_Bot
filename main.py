@@ -1,111 +1,147 @@
 import pandas as pd
 import streamlit as st
-from copy import deepcopy
 from datetime import datetime
+from copy import deepcopy
+from openai import OpenAI
 
-# Cargar el archivo CSV del menú
-def load_menu(csv_file):
-    try:
-        menu = pd.read_csv(csv_file)
-        return menu
-    except Exception as e:
-        st.error(f"Error al cargar el menú: {e}")
-        return pd.DataFrame()
+# Cargar el API key de OpenAI desde Streamlit Secrets
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
-# Cargar distritos de reparto desde CSV
-def load_districts(csv_file):
-    try:
-        districts = pd.read_csv(csv_file)
-        return districts
-    except Exception as e:
-        st.error(f"Error al cargar los distritos: {e}")
-        return pd.DataFrame()
-
-# Función para mostrar el menú en un formato más amigable
-def format_menu(menu):
-    return "\n".join([f"{row['Plato']}: {row['Descripción']} - Precio: S/{row['Precio']}" for idx, row in menu.iterrows()])
-
-# Función para generar la respuesta
-def generate_response(prompt, temperature=0):
-    st.session_state["messages"].append({"role": "user", "content": prompt})
-
-    # Aquí puedes agregar la lógica de respuesta
-    if "Arroz con Pollo" in prompt or "Tallarines Verdes" in prompt:
-        st.session_state["order"] = prompt
-        response = "Perfecto, ahora elige un distrito de reparto entre los siguientes:\n" + "\n".join(st.session_state["districts"])
-    elif any(d in prompt for d in st.session_state["districts"]):
-        st.session_state["district"] = prompt
-        response = f"Pedido registrado: {st.session_state['order']} para {st.session_state['district']}. El monto es S/{st.session_state['price']}. Gracias por tu pedido."
-        save_order(st.session_state["order"], st.session_state["district"], st.session_state["price"])
-    else:
-        response = "No entendí tu pedido. Por favor, elige un plato del menú."
-    
-    st.session_state["messages"].append({"role": "assistant", "content": response})
-    return response
-
-# Guardar el pedido en un archivo CSV
-def save_order(order, district, price):
-    with open("orders.csv", "a") as f:
-        f.write(f"{datetime.now()},{order},{district},{price}\n")
-
-# Configuración inicial de la app
+# Configuración inicial de la página
 st.set_page_config(page_title="SazónBot", page_icon=":pot_of_food:")
 st.title("🍲 SazónBot")
 
-# Cargar el menú y los distritos desde CSV
-menu = load_menu("carta.csv")
-districts = load_districts("distritos.csv")
+# Función para cargar el menú desde un archivo CSV
+def load_menu(csv_file):
+    menu = pd.read_csv(csv_file)
+    return menu
 
-# Almacenar distritos en el estado de la sesión
-if "districts" not in st.session_state:
-    if not districts.empty:
-        st.session_state["districts"] = districts["Distrito"].tolist()
+# Función para cargar los distritos de reparto desde otro CSV
+def load_districts(csv_file):
+    districts = pd.read_csv(csv_file)
+    return districts['Distrito'].tolist()
+
+# Función para mostrar el menú al usuario
+def show_menu(menu):
+    st.markdown("### Menú del día")
+    for index, row in menu.iterrows():
+        st.markdown(f"- **{row['Plato']}**: {row['Descripción']} - Precio: S/{row['Precio']}")
+
+# Cargar menú y distritos (asegúrate de que los archivos CSV existen)
+menu = load_menu("carta.csv")  # Archivo 'menu.csv' debe tener columnas: Plato, Descripción, Precio
+districts = load_districts("distritos.csv")  # Archivo 'distritos.csv' debe tener una columna: Distrito
+
+# Mostrar el menú
+show_menu(menu)
+
+# Función para registrar los pedidos en un archivo
+def save_order(order, total_price):
+    with open("orders.csv", "a") as f:
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        f.write(f"{timestamp}, {order}, {total_price}\n")
+
+# Función para verificar si un pedido es válido
+def is_valid_order(order, menu):
+    for item in order:
+        if item not in menu['Plato'].values:
+            return False
+    return True
+
+# Función para verificar si el distrito es válido
+def is_valid_district(district, districts):
+    return district in districts
+
+# Función para manejar el pedido del usuario
+def handle_order(prompt, menu, districts):
+    # Extraer platos y distritos del mensaje del usuario
+    order = [word for word in prompt.split() if word in menu['Plato'].values]
+    district = next((word for word in prompt.split() if word in districts), None)
+
+    # Validar si los platos están en el menú
+    if not is_valid_order(order, menu):
+        return "Algunos de los platos que has seleccionado no están en el menú. Por favor revisa."
+
+    # Validar si el distrito es válido
+    if not district:
+        return f"Lo siento, pero no entregamos en ese distrito. Estos son los distritos disponibles: {', '.join(districts)}"
+
+    # Calcular el precio total
+    total_price = sum(menu[menu['Plato'].isin(order)]['Precio'])
+
+    # Guardar el pedido
+    save_order(order, total_price)
+
+    # Responder con el resumen del pedido
+    return f"Tu pedido ha sido registrado: {order}. El monto total es S/{total_price}. Gracias por tu compra."
+
+# Función para controlar el tono de la respuesta
+def adjust_tone(response, tone="amigable"):
+    if tone == "amigable":
+        return f"😊 {response}"
+    elif tone == "formal":
+        return f"Estimado cliente, {response}"
     else:
-        st.session_state["districts"] = []
+        return response
 
-# Mostrar el mensaje de bienvenida
+# Función para generar la respuesta del chatbot
+def generate_response(prompt, temperature=0):
+    """Enviar prompt a OpenAI y devolver la respuesta. Añadir el prompt y la respuesta a la conversación."""
+    st.session_state["messages"].append({"role": "user", "content": prompt})
+
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=st.session_state["messages"],
+        temperature=temperature,
+    )
+    response = completion.choices[0].message.content
+    st.session_state["messages"].append({"role": "assistant", "content": response})
+    return response
+
+# Estado inicial del chatbot
+initial_state = [
+    {"role": "system", "content": "You are SazónBot. A friendly assistant helping customers with their lunch orders."},
+    {
+        "role": "assistant",
+        "content": "👨‍🍳¿Qué te puedo ofrecer?",
+    },
+]
+
+# Mostrar mensaje de bienvenida
+intro = """¡Bienvenido a Sazón Bot, el lugar donde todos tus antojos de almuerzo se hacen realidad!
+
+Comienza a chatear con Sazón Bot y descubre qué puedes pedir, cuánto cuesta y cómo realizar tu pago. ¡Estamos aquí para ayudarte a disfrutar del mejor almuerzo!."""
+st.markdown(intro)
+
+# Inicializar la conversación si no existe en la sesión
 if "messages" not in st.session_state:
-    st.session_state["messages"] = [
-        {"role": "assistant", "content": "👨‍🍳¿Qué te puedo ofrecer?"}
-    ]
+    st.session_state["messages"] = deepcopy(initial_state)
 
 # Botón para limpiar la conversación
-clear_button = st.button("Limpiar conversación", key="clear")
+clear_button = st.button("Limpiar Conversación", key="clear")
 if clear_button:
-    st.session_state["messages"] = [
-        {"role": "assistant", "content": "👨‍🍳¿Qué te puedo ofrecer?"}
-    ]
-    if "order" in st.session_state:
-        del st.session_state["order"]
-    if "district" in st.session_state:
-        del st.session_state["district"]
+    st.session_state["messages"] = deepcopy(initial_state)
 
-# Mostrar mensajes del bot y del usuario
+# Mostrar el historial de la conversación
 for message in st.session_state.messages:
-    if message["role"] == "assistant":
+    if message["role"] == "system":
+        continue
+    elif message["role"] == "assistant":
         with st.chat_message(message["role"], avatar="🍲"):
             st.markdown(message["content"])
     else:
         with st.chat_message(message["role"], avatar="👤"):
             st.markdown(message["content"])
 
-# Entrada de chat del usuario
+# Entrada del usuario
 if prompt := st.chat_input("¿Qué te gustaría pedir?"):
     with st.chat_message("user", avatar="👤"):
         st.markdown(prompt)
 
-    if "order" not in st.session_state:
-        # Buscar el plato en el menú
-        plato_encontrado = menu[menu["Plato"].str.contains(prompt, case=False, na=False)]
-        
-        if not plato_encontrado.empty:
-            st.session_state["price"] = plato_encontrado["Precio"].values[0]
-            menu_formatted = format_menu(menu)
-            output = generate_response(f"Este es el menú del día:\n{menu_formatted}\n¿Qué deseas pedir?")
-        else:
-            output = "Lo siento, no encontré ese plato en el menú. Por favor, elige otro."
-    else:
-        output = generate_response(prompt)
+    # Procesar el pedido y generar la respuesta
+    response = handle_order(prompt, menu, districts)
+
+    # Ajustar el tono de la respuesta
+    response = adjust_tone(response, tone="amigable")
 
     with st.chat_message("assistant", avatar="🍲"):
-        st.markdown(output)
+        st.markdown(response)

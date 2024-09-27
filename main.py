@@ -39,13 +39,17 @@ def show_menu(menu):
 menu = load_menu("carta.csv")  # Archivo 'menu.csv' debe tener columnas: Plato, Descripción, Precio
 districts = load_districts("distritos.csv")  # Archivo 'distritos.csv' debe tener una columna: Distrito
 
+# Función para mostrar el menú en un formato más amigable
+def format_menu(menu):
+    return "\n".join([f"{row['Plato']}: {row['Descripción']} - Precio: S/{row['Precio']}" for idx, row in menu.iterrows()])
+
 # Estado inicial del chatbot
+menu = load_menu("carta.csv")  # Asegúrate de que el menú esté cargado aquí
 initial_state = [
     {"role": "system", "content": "You are SazónBot. A friendly assistant helping customers with their lunch orders."},
     {
         "role": "assistant",
-        "content": f"👨‍🍳¿Qué te puedo ofrecer?\n\nEste es el menú del día:\n{for index, row in menu.iterrows():
-        st.markdown(f"- **{row['Plato']}**: {row['Descripción']} - Precio: S/{row['Precio']}")}",
+        "content": f"👨‍🍳¿Qué te puedo ofrecer?\n\nEste es el menú del día:\n{format_menu(menu)}",
     },
 ]
 

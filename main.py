@@ -44,10 +44,11 @@ def format_menu(menu):
     formatted_menu = []
     for idx, row in menu.iterrows():
         formatted_menu.append(
-            f"**{\nrow['Plato']}**: {row['Descripción']}  \nPrecio: **S/{row['Precio']}**"
+            f"**{row['Plato']}**  \n{row['Descripción']}  \n**Precio:** S/{row['Precio']}"
         )
         
     return "\n\n".join(formatted_menu)
+
 
 # Cargar menú y distritos (asegúrate de que los archivos CSV existen)
 menu = load_menu("carta.csv")  # Archivo 'menu.csv' debe tener columnas: Plato, Descripción, Precio

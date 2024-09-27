@@ -101,7 +101,7 @@ initial_state = [
     {"role": "system", "content": "You are SazónBot. A friendly assistant helping customers with their lunch orders."},
     {
         "role": "assistant",
-        "content": f"👨‍🍳¿Qué te puedo ofrecer?\n\nEste es el menú del día:\n{format_menu(menu)}",
+        "content": f"👨‍🍳¿Qué te puedo ofrecer?\n\nEste es el menú del día:\n{show_menu(menu)}",
     },
 ]
 

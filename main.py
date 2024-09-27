@@ -27,6 +27,12 @@ def load_districts(csv_file):
     districts = pd.read_csv(csv_file)
     return districts['Distrito'].tolist()
 
+# Función para mostrar el menú al usuario
+def show_menu(menu):
+    st.markdown("### Menú del día")
+    for index, row in menu.iterrows():
+        st.markdown(f"- **{row['Plato']}**: {row['Descripción']} - Precio: S/{row['Precio']}")
+
 # Función para mostrar el menú en un formato más amigable
 def format_menu(menu):
     if menu.empty:
@@ -41,7 +47,7 @@ def format_menu(menu):
     return "\n\n".join(formatted_menu)
 
 # Cargar menú y distritos (asegúrate de que los archivos CSV existen)
-menu = load_menu("carta.csv")  # Archivo 'carta.csv' debe tener columnas: Plato, Descripción, Precio
+menu = load_menu("carta.csv")  # Archivo 'menu.csv' debe tener columnas: Plato, Descripción, Precio
 districts = load_districts("distritos.csv")  # Archivo 'distritos.csv' debe tener una columna: Distrito
 
 # Estado inicial del chatbot
@@ -69,15 +75,15 @@ def is_valid_district(district, districts):
 
 # Función para manejar el pedido del usuario
 def handle_order(prompt, menu, districts):
+    # Extraer platos del mensaje del usuario
     order = [word for word in prompt.split() if word in menu['Plato'].values]
-    district = next((word for word in prompt.split() if word in districts), None)
 
-    # Validar si los platos están en el menú
+    # Buscar el distrito mencionado en el mensaje
+    district = next((word for word in districts if word in prompt), None)
+
+    # Validar si se seleccionaron platos
     if not order:
-        return "No has seleccionado ningún plato del menú. Por favor revisa."
-
-    if not is_valid_order(order, menu):
-        return "Algunos de los platos que has seleccionado no están en el menú. Por favor revisa."
+        return "😊 No has seleccionado ningún plato del menú. Por favor revisa."
 
     # Validar si el distrito es válido
     if not district:
@@ -87,7 +93,7 @@ def handle_order(prompt, menu, districts):
     total_price = sum(menu[menu['Plato'].isin(order)]['Precio'])
 
     # Guardar el pedido
-    save_order(order, total_price)
+    save_order(", ".join(order), total_price)
 
     # Responder con el resumen del pedido
     return f"Tu pedido ha sido registrado: {', '.join(order)}. El monto total es S/{total_price}. Gracias por tu compra."
@@ -134,6 +140,7 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
 
     with st.chat_message("assistant", avatar="🍲"):
         st.markdown(response)
+
 
 
 

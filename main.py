@@ -73,15 +73,20 @@ def is_valid_order(order, menu):
 def is_valid_district(district, districts):
     return district in districts
 
-# Función para manejar el pedido del usuario
-def handle_order(prompt, menu, districts):
-    # Extraer platos del mensaje del usuario
-    order = [word for word in prompt.split() if word in menu['Plato'].values]
-
-    # Buscar el distrito mencionado en el mensaje
+# Función para clasificar el pedido del usuario
+def classify_order(prompt, menu, districts):
+    # Extraer platos y distrito del mensaje del usuario
+    order = next((word for word in menu['Plato'].values if word in prompt), None)
     district = next((word for word in districts if word in prompt), None)
 
-    # Validar si se seleccionaron platos
+    return order, district
+
+# Función para manejar el pedido del usuario
+def handle_order(prompt, menu, districts):
+    # Clasificar el pedido
+    order, district = classify_order(prompt, menu, districts)
+
+    # Validar si se seleccionó un plato
     if not order:
         return "😊 No has seleccionado ningún plato del menú. Por favor revisa."
 
@@ -90,13 +95,13 @@ def handle_order(prompt, menu, districts):
         return f"Lo siento, pero no entregamos en ese distrito. Estos son los distritos disponibles: {', '.join(districts)}"
 
     # Calcular el precio total
-    total_price = sum(menu[menu['Plato'].isin(order)]['Precio'])
+    total_price = menu.loc[menu['Plato'] == order, 'Precio'].values[0]
 
     # Guardar el pedido
-    save_order(", ".join(order), total_price)
+    save_order(order, total_price)
 
     # Responder con el resumen del pedido
-    return f"Tu pedido ha sido registrado: {', '.join(order)}. El monto total es S/{total_price}. Gracias por tu compra."
+    return f"Tu pedido ha sido registrado: {order}. El monto total es S/{total_price}. Gracias por tu compra."
 
 # Función para ajustar el tono de la respuesta
 def adjust_tone(response, tone="amigable"):

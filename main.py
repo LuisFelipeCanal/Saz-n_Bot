@@ -28,6 +28,7 @@ def load_districts(csv_file):
     districts = pd.read_csv(csv_file)
     return districts['Distrito'].tolist()
 
+
 # Función para mostrar el menú al usuario
 def show_menu(menu):
     st.markdown("### Menú del día")
@@ -38,6 +39,14 @@ def show_menu(menu):
 menu = load_menu("carta.csv")  # Archivo 'menu.csv' debe tener columnas: Plato, Descripción, Precio
 districts = load_districts("distritos.csv")  # Archivo 'distritos.csv' debe tener una columna: Distrito
 
+# Estado inicial del chatbot
+initial_state = [
+    {"role": "system", "content": "You are SazónBot. A friendly assistant helping customers with their lunch orders."},
+    {
+        "role": "assistant",
+        "content": f"👨‍🍳¿Qué te puedo ofrecer?\n\nEste es el menú del día:\n{show_menu(menu)}",
+    },
+]
 
 
 # Función para registrar los pedidos en un archivo
@@ -103,14 +112,7 @@ def generate_response(prompt, temperature=0):
     st.session_state["messages"].append({"role": "assistant", "content": response})
     return response
 
-# Estado inicial del chatbot
-initial_state = [
-    {"role": "system", "content": "You are SazónBot. A friendly assistant helping customers with their lunch orders."},
-    {
-        "role": "assistant",
-        "content": f"👨‍🍳¿Qué te puedo ofrecer?\n\nEste es el menú del día:\n{show_menu(menu)}",
-    },
-]
+
 
 # Inicializar la conversación si no existe en la sesión
 if "messages" not in st.session_state:

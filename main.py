@@ -11,6 +11,13 @@ client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 st.set_page_config(page_title="SazónBot", page_icon=":pot_of_food:")
 st.title("🍲 SazónBot")
 
+
+# Mostrar mensaje de bienvenida
+intro = """¡Bienvenido a Sazón Bot, el lugar donde todos tus antojos de almuerzo se hacen realidad!
+
+Comienza a chatear con Sazón Bot y descubre qué puedes pedir, cuánto cuesta y cómo realizar tu pago. ¡Estamos aquí para ayudarte a disfrutar del mejor almuerzo!."""
+st.markdown(intro)
+
 # Función para cargar el menú desde un archivo CSV
 def load_menu(csv_file):
     menu = pd.read_csv(csv_file)
@@ -104,12 +111,6 @@ initial_state = [
         "content": f"👨‍🍳¿Qué te puedo ofrecer?\n\nEste es el menú del día:\n{show_menu(menu)}",
     },
 ]
-
-# Mostrar mensaje de bienvenida
-intro = """¡Bienvenido a Sazón Bot, el lugar donde todos tus antojos de almuerzo se hacen realidad!
-
-Comienza a chatear con Sazón Bot y descubre qué puedes pedir, cuánto cuesta y cómo realizar tu pago. ¡Estamos aquí para ayudarte a disfrutar del mejor almuerzo!."""
-st.markdown(intro)
 
 # Inicializar la conversación si no existe en la sesión
 if "messages" not in st.session_state:

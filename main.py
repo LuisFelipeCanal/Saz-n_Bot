@@ -31,8 +31,7 @@ def show_menu(menu):
 menu = load_menu("carta.csv")  # Archivo 'menu.csv' debe tener columnas: Plato, Descripción, Precio
 districts = load_districts("distritos.csv")  # Archivo 'distritos.csv' debe tener una columna: Distrito
 
-# Mostrar el menú
-show_menu(menu)
+
 
 # Función para registrar los pedidos en un archivo
 def save_order(order, total_price):
@@ -102,7 +101,8 @@ initial_state = [
     {"role": "system", "content": "You are SazónBot. A friendly assistant helping customers with their lunch orders."},
     {
         "role": "assistant",
-        "content": "👨‍🍳¿Qué te puedo ofrecer?",
+        "content": "👨‍🍳¿Qué te puedo ofrecer? 
+            show_menu(menu)",
     },
 ]
 

@@ -11,7 +11,6 @@ client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 st.set_page_config(page_title="SazónBot", page_icon=":pot_of_food:")
 st.title("🍲 SazónBot")
 
-
 # Mostrar mensaje de bienvenida
 intro = """¡Bienvenido a Sazón Bot, el lugar donde todos tus antojos de almuerzo se hacen realidad!
 
@@ -28,14 +27,6 @@ def load_districts(csv_file):
     districts = pd.read_csv(csv_file)
     return districts['Distrito'].tolist()
 
-
-# Función para mostrar el menú al usuario
-def show_menu(menu):
-    st.markdown("### Menú del día")
-    for index, row in menu.iterrows():
-        st.markdown(f"- **{row['Plato']}**: {row['Descripción']} - Precio: S/{row['Precio']}")
-
-
 # Función para mostrar el menú en un formato más amigable
 def format_menu(menu):
     if menu.empty:
@@ -49,15 +40,11 @@ def format_menu(menu):
         
     return "\n\n".join(formatted_menu)
 
-
 # Cargar menú y distritos (asegúrate de que los archivos CSV existen)
-menu = load_menu("carta.csv")  # Archivo 'menu.csv' debe tener columnas: Plato, Descripción, Precio
+menu = load_menu("carta.csv")  # Archivo 'carta.csv' debe tener columnas: Plato, Descripción, Precio
 districts = load_districts("distritos.csv")  # Archivo 'distritos.csv' debe tener una columna: Distrito
 
-
-
 # Estado inicial del chatbot
-menu = load_menu("carta.csv")  # Asegúrate de que el menú esté cargado aquí
 initial_state = [
     {"role": "system", "content": "You are SazónBot. A friendly assistant helping customers with their lunch orders."},
     {
@@ -65,8 +52,6 @@ initial_state = [
         "content": f"👨‍🍳¿Qué te puedo ofrecer?\n\nEste es el menú del día:\n\n{format_menu(menu)}",
     },
 ]
-
-
 
 # Función para registrar los pedidos en un archivo
 def save_order(order, total_price):
@@ -76,10 +61,7 @@ def save_order(order, total_price):
 
 # Función para verificar si un pedido es válido
 def is_valid_order(order, menu):
-    for item in order:
-        if item not in menu['Plato'].values:
-            return False
-    return True
+    return all(item in menu['Plato'].values for item in order)
 
 # Función para verificar si el distrito es válido
 def is_valid_district(district, districts):
@@ -87,11 +69,13 @@ def is_valid_district(district, districts):
 
 # Función para manejar el pedido del usuario
 def handle_order(prompt, menu, districts):
-    # Extraer platos y distritos del mensaje del usuario
     order = [word for word in prompt.split() if word in menu['Plato'].values]
     district = next((word for word in prompt.split() if word in districts), None)
 
     # Validar si los platos están en el menú
+    if not order:
+        return "No has seleccionado ningún plato del menú. Por favor revisa."
+
     if not is_valid_order(order, menu):
         return "Algunos de los platos que has seleccionado no están en el menú. Por favor revisa."
 
@@ -106,9 +90,9 @@ def handle_order(prompt, menu, districts):
     save_order(order, total_price)
 
     # Responder con el resumen del pedido
-    return f"Tu pedido ha sido registrado: {order}. El monto total es S/{total_price}. Gracias por tu compra."
+    return f"Tu pedido ha sido registrado: {', '.join(order)}. El monto total es S/{total_price}. Gracias por tu compra."
 
-# Función para controlar el tono de la respuesta
+# Función para ajustar el tono de la respuesta
 def adjust_tone(response, tone="amigable"):
     if tone == "amigable":
         return f"😊 {response}"
@@ -116,22 +100,6 @@ def adjust_tone(response, tone="amigable"):
         return f"Estimado cliente, {response}"
     else:
         return response
-
-# Función para generar la respuesta del chatbot
-def generate_response(prompt, temperature=0):
-    """Enviar prompt a OpenAI y devolver la respuesta. Añadir el prompt y la respuesta a la conversación."""
-    st.session_state["messages"].append({"role": "user", "content": prompt})
-
-    completion = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=st.session_state["messages"],
-        temperature=temperature,
-    )
-    response = completion.choices[0].message.content
-    st.session_state["messages"].append({"role": "assistant", "content": response})
-    return response
-
-
 
 # Inicializar la conversación si no existe en la sesión
 if "messages" not in st.session_state:
@@ -167,7 +135,5 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
     with st.chat_message("assistant", avatar="🍲"):
         st.markdown(response)
 
-    with st.chat_message("assistant", avatar="🍲"):
-        st.markdown(output)
 
 

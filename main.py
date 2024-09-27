@@ -40,7 +40,14 @@ def show_menu(menu):
 def format_menu(menu):
     if menu.empty:
         return "No hay platos disponibles."
-    return "\n".join([f"{row['Plato']}: {row['Descripción']} - Precio: S/{row['Precio']}" for idx, row in menu.iterrows()])
+    
+    formatted_menu = []
+    for idx, row in menu.iterrows():
+        formatted_menu.append(
+            f"**{row['Plato']}**: {row['Descripción']}  \nPrecio: **S/{row['Precio']}**"
+        )
+        
+    return "\n\n".join(formatted_menu)
 
 # Cargar menú y distritos (asegúrate de que los archivos CSV existen)
 menu = load_menu("carta.csv")  # Archivo 'menu.csv' debe tener columnas: Plato, Descripción, Precio

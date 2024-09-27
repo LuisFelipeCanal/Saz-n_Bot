@@ -5,13 +5,21 @@ from datetime import datetime
 
 # Cargar el archivo CSV del menú
 def load_menu(csv_file):
-    menu = pd.read_csv(csv_file)
-    return menu
+    try:
+        menu = pd.read_csv(csv_file)
+        return menu
+    except Exception as e:
+        st.error(f"Error al cargar el menú: {e}")
+        return pd.DataFrame()
 
 # Cargar distritos de reparto desde CSV
 def load_districts(csv_file):
-    districts = pd.read_csv(csv_file)
-    return districts
+    try:
+        districts = pd.read_csv(csv_file)
+        return districts
+    except Exception as e:
+        st.error(f"Error al cargar los distritos: {e}")
+        return pd.DataFrame()
 
 # Función para mostrar el menú en un formato más amigable
 def format_menu(menu):
@@ -50,7 +58,10 @@ districts = load_districts("distritos.csv")
 
 # Almacenar distritos en el estado de la sesión
 if "districts" not in st.session_state:
-    st.session_state["districts"] = districts["Distrito"].tolist()
+    if not districts.empty:
+        st.session_state["districts"] = districts["Distrito"].tolist()
+    else:
+        st.session_state["districts"] = []
 
 # Mostrar el mensaje de bienvenida
 if "messages" not in st.session_state:
@@ -84,12 +95,18 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
         st.markdown(prompt)
 
     if "order" not in st.session_state:
-        # Mostrar el menú después de la primera interacción
-        st.session_state["price"] = menu.loc[menu["Plato"].str.contains(prompt, case=False, na=False), "Precio"].values[0]
-        menu_formatted = format_menu(menu)
-        output = generate_response(f"Este es el menú del día:\n{menu_formatted}\n¿Qué deseas pedir?")
+        # Buscar el plato en el menú
+        plato_encontrado = menu[menu["Plato"].str.contains(prompt, case=False, na=False)]
+        
+        if not plato_encontrado.empty:
+            st.session_state["price"] = plato_encontrado["Precio"].values[0]
+            menu_formatted = format_menu(menu)
+            output = generate_response(f"Este es el menú del día:\n{menu_formatted}\n¿Qué deseas pedir?")
+        else:
+            output = "Lo siento, no encontré ese plato en el menú. Por favor, elige otro."
     else:
         output = generate_response(prompt)
 
     with st.chat_message("assistant", avatar="🍲"):
         st.markdown(output)
+

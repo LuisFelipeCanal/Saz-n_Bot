@@ -140,9 +140,10 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
     # Guardar el pedido en el estado
     st.session_state["last_order"] = prompt  # Guarda el pedido en el estado
 
-    # Entrada del usuario para el distrito (ahora fuera del bloque anterior)
-    if "district_input" not in st.session_state:
-        district_input = st.chat_input("¿Cuál es tu distrito y dirección?")
+    # Entrada del usuario para el distrito
+    district_input = st.chat_input("Por favor selecciona un distrito de entrega: Miraflores, San Isidro, Barranco")
+
+    if district_input:  # Verifica que el distrito se haya ingresado
         with st.chat_message("user", avatar="👤"):
             st.markdown(district_input)
 
@@ -156,9 +157,6 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
 
         with st.chat_message("assistant", avatar="🍲"):
             st.markdown(response)
-
-        # Marcar que se ha ingresado el distrito
-        st.session_state["district_input"] = True  # Indica que el usuario ya ingresó el distrito
 
 
 

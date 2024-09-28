@@ -69,7 +69,7 @@ def is_valid_district(district, districts):
 
 # Función para clasificar el plato
 def classify_order(prompt, menu):
-    for word in prompt.split():
+    for word in prompt.split(" "):
         if word in menu['Plato'].values:
             return word  # Retorna el nombre del plato encontrado
     return None

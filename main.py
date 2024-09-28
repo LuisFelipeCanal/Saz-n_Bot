@@ -42,7 +42,7 @@ initial_state = [
     {"role": "system", "content": "You are SazónBot. A friendly assistant helping customers with their lunch orders."},
     {
         "role": "assistant",
-        "content": "👨‍🍳 ¿Qué te puedo ofrecer?\n\nEste es el menú del día:\n\n" + "\n".join([f"**{row['Plato']}** - S/{row['Precio']}" for index, row in menu.iterrows()])
+        "content": "👨‍🍳 ¿Qué te puedo ofrecer?\n\n" + "\n".join([f"**{row['Plato']}** - S/{row['Precio']}" for index, row in menu.iterrows()])
     },
 ]
 
@@ -52,32 +52,46 @@ def save_order(order, total_price):
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         f.write(f"{timestamp}, {order}, {total_price}\n")
 
-# Función para clasificar el plato
-def classify_order(prompt, menu):
+# Función para clasificar el plato y el distrito
+def extract_order_info(prompt, menu, districts):
+    order = None
+    district = None
+
+    # Extraer el plato
     for word in prompt.split():
         if word in menu['Plato'].values:
-            return word  # Retorna el nombre del plato encontrado
-    return None
+            order = word
+            break  # Detenerse si se encuentra el plato
+
+    # Extraer el distrito
+    for district_candidate in districts:
+        if district_candidate in prompt:
+            district = district_candidate
+            break  # Detenerse si se encuentra el distrito
+
+    return order, district
 
 # Función para manejar el pedido del usuario
-def handle_order(prompt, menu):
-    # Clasificar el pedido
-    order = classify_order(prompt, menu)
+def handle_order(prompt, menu, districts):
+    # Extraer el plato y el distrito
+    order, district = extract_order_info(prompt, menu, districts)
 
     # Validar si se seleccionó un plato
     if not order:
         return "😊 No has seleccionado ningún plato del menú. Por favor revisa."
 
-    # Responder con el resumen del pedido y mostrar los distritos
-    district_list = ", ".join(districts)
-    return f"Tu pedido ha sido registrado: {order}. Por favor selecciona un distrito de entrega: {district_list}"
+    # Validar si el distrito es válido
+    if not district:
+        return f"Lo siento, pero no entregamos en ese distrito. Estos son los distritos disponibles: {', '.join(districts)}"
 
-# Función para verificar el distrito
-def verify_district(prompt, districts):
-    for district in districts:
-        if district in prompt:
-            return district  # Retorna el distrito encontrado
-    return None
+    # Calcular el precio total
+    total_price = menu.loc[menu['Plato'] == order, 'Precio'].values[0]
+
+    # Guardar el pedido
+    save_order(order, total_price)
+
+    # Responder con el resumen del pedido
+    return f"Tu pedido ha sido registrado: {order}. El monto total es S/{total_price}. Gracias por tu compra. El pedido se enviará a {district}."
 
 # Inicializar la conversación si no existe en la sesión
 if "messages" not in st.session_state:
@@ -100,28 +114,12 @@ for message in st.session_state.messages:
             st.markdown(message["content"])
 
 # Entrada del usuario para el pedido
-if prompt := st.chat_input("¿Qué te gustaría pedir?"):
+if prompt := st.chat_input("¿Qué te gustaría pedir y en qué distrito?"):
     with st.chat_message("user", avatar="👤"):
         st.markdown(prompt)
 
     # Procesar el pedido y generar la respuesta
-    response = handle_order(prompt, menu)
-
-    with st.chat_message("assistant", avatar="🍲"):
-        st.markdown(response)
-
-# Entrada del usuario para el distrito
-if prompt := st.chat_input("¿Cuál es tu distrito y dirección?"):
-    with st.chat_message("user", avatar="👤"):
-        st.markdown(prompt)
-
-    # Verificar el distrito y responder
-    district = verify_district(prompt, districts)
-    
-    if district:
-        response = f"Gracias por proporcionar tu distrito: {district}. Procederemos a entregar tu pedido allí."
-    else:
-        response = f"Lo siento, pero no entregamos en ese distrito. Estos son los distritos disponibles: {', '.join(districts)}"
+    response = handle_order(prompt, menu, districts)
 
     with st.chat_message("assistant", avatar="🍲"):
         st.markdown(response)

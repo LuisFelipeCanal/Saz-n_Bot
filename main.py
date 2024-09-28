@@ -137,20 +137,20 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
         st.markdown(response)
 
     # Entrada del usuario para el distrito
-    prompt= st.chat_input("¿Cuál es tu distrito y dirección?"):
-        with st.chat_message("user", avatar="👤"):
-            st.markdown(prompt)
+    prompt= st.chat_input("¿Cuál es tu distrito y dirección?")
+    with st.chat_message("user", avatar="👤"):
+        st.markdown(prompt)
 
         # Verificar el distrito y responder
-        district = verify_district(prompt, districts)
+    district = verify_district(prompt, districts)
     
-        if district:
-            response = f"Gracias por proporcionar tu distrito: {district}. Procederemos a entregar tu pedido allí."
-        else:
-            response = f"Lo siento, pero no entregamos en ese distrito. Estos son los distritos disponibles: {', '.join(districts)}"
+    if district:
+        response = f"Gracias por proporcionar tu distrito: {district}. Procederemos a entregar tu pedido allí."
+    else:
+        response = f"Lo siento, pero no entregamos en ese distrito. Estos son los distritos disponibles: {', '.join(districts)}"
 
-        with st.chat_message("assistant", avatar="🍲"):
-            st.markdown(response)
+    with st.chat_message("assistant", avatar="🍲"):
+        st.markdown(response)
 
 
 

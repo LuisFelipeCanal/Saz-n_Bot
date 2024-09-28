@@ -89,11 +89,12 @@ def handle_order(prompt, menu):
     return f"Tu pedido ha sido registrado: {order}. \n\nPor favor selecciona un distrito de entrega: {district_list}"
 
 # Función para verificar el distrito
-def verify_district(prompt, district):
-    for word in prompt.split(","):
-        if word in district.values:
+def verify_district(prompt, districts):
+    for word in districts:  # Iterar sobre la lista de distritos
+        if word in prompt:  # Comprobar si el distrito está en el texto del prompt
             return word  # Retorna el distrito encontrado
     return None
+
 # Función para ajustar el tono de la respuesta
 def adjust_tone(response, tone="amigable"):
     if tone == "amigable":

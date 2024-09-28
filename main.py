@@ -133,24 +133,32 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
     # Procesar el pedido y generar la respuesta
     response = handle_order(prompt, menu)
 
+    # Mostrar la respuesta del asistente
     with st.chat_message("assistant", avatar="🍲"):
         st.markdown(response)
 
-    # Entrada del usuario para el distrito
-    st.chat_input("¿Cuál es tu distrito y dirección?")
-    with st.chat_message("user", avatar="👤"):
-        st.markdown(prompt)
+    # Guardar el pedido en el estado
+    st.session_state["last_order"] = prompt  # Guarda el pedido en el estado
+
+    # Entrada del usuario para el distrito (ahora fuera del bloque anterior)
+    if "district_input" not in st.session_state:
+        district_input = st.chat_input("¿Cuál es tu distrito y dirección?")
+        with st.chat_message("user", avatar="👤"):
+            st.markdown(district_input)
 
         # Verificar el distrito y responder
-    district = verify_district(prompt, districts)
-    
-    if district:
-        response = f"Gracias por proporcionar tu distrito: {district}. Procederemos a entregar tu pedido allí."
-    else:
-        response = f"Lo siento, pero no entregamos en ese distrito. Estos son los distritos disponibles: {', '.join(districts)}"
+        district = verify_district(district_input, districts)
+        
+        if district:
+            response = f"Gracias por proporcionar tu distrito: {district}. Procederemos a entregar tu pedido allí."
+        else:
+            response = f"Lo siento, pero no entregamos en ese distrito. Estos son los distritos disponibles: {', '.join(districts)}"
 
-    with st.chat_message("assistant", avatar="🍲"):
-        st.markdown(response)
+        with st.chat_message("assistant", avatar="🍲"):
+            st.markdown(response)
+
+        # Marcar que se ha ingresado el distrito
+        st.session_state["district_input"] = True  # Indica que el usuario ya ingresó el distrito
 
 
 

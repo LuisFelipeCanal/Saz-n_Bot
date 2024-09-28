@@ -91,7 +91,7 @@ def handle_order(prompt, menu):
 # Función para verificar el distrito
 def verify_district(prompt, district):
     for word in prompt.split(","):
-        if word in districts.values:
+        if word in district.values:
             return word  # Retorna el distrito encontrado
     return None
 # Función para ajustar el tono de la respuesta

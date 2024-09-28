@@ -33,8 +33,21 @@ def show_menu(menu):
     for index, row in menu.iterrows():
         st.markdown(f"- **{row['Plato']}**: {row['Descripción']} - Precio: S/{row['Precio']}")
 
+# Función para mostrar el menú en un formato más amigable
+def format_menu(menu):
+    if menu.empty:
+        return "No hay platos disponibles."
+    
+    formatted_menu = []
+    for idx, row in menu.iterrows():
+        formatted_menu.append(
+            f"**{row['Plato']}**  \n{row['Descripción']}  \n**Precio:** S/{row['Precio']}"
+        )
+        
+    return "\n\n".join(formatted_menu)
+
 # Cargar menú y distritos (asegúrate de que los archivos CSV existen)
-menu = load_menu("carta.csv")  # Archivo 'carta.csv' debe tener columnas: Plato, Descripción, Precio
+menu = load_menu("carta.csv")  # Archivo 'menu.csv' debe tener columnas: Plato, Descripción, Precio
 districts = load_districts("distritos.csv")  # Archivo 'distritos.csv' debe tener una columna: Distrito
 
 # Estado inicial del chatbot
@@ -42,7 +55,7 @@ initial_state = [
     {"role": "system", "content": "You are SazónBot. A friendly assistant helping customers with their lunch orders."},
     {
         "role": "assistant",
-        "content": "👨‍🍳 ¿Qué te puedo ofrecer?\n\nEste es el menú del día:\n\n" + "\n".join([f"**{row['Plato']}** - S/{row['Precio']}" for index, row in menu.iterrows()])
+        "content": f"👨‍🍳¿Qué te puedo ofrecer?\n\nEste es el menú del día:\n\n{format_menu(menu)}",
     },
 ]
 
@@ -52,32 +65,47 @@ def save_order(order, total_price):
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         f.write(f"{timestamp}, {order}, {total_price}\n")
 
-# Función para clasificar el plato
-def classify_order(prompt, menu):
-    for word in prompt.split():
-        if word in menu['Plato'].values:
-            return word  # Retorna el nombre del plato encontrado
-    return None
+# Función para verificar si un pedido es válido
+def is_valid_order(order, menu):
+    return all(item in menu['Plato'].values for item in order)
+
+# Función para verificar si el distrito es válido
+def is_valid_district(district, districts):
+    return district in districts
 
 # Función para manejar el pedido del usuario
-def handle_order(prompt, menu):
-    # Clasificar el pedido
-    order = classify_order(prompt, menu)
+def handle_order(prompt, menu, districts):
+    # Extraer platos del mensaje del usuario
+    order = [word for word in prompt.split() if word in menu['Plato'].values]
 
-    # Validar si se seleccionó un plato
+    # Buscar el distrito mencionado en el mensaje
+    district = next((word for word in districts if word in prompt), None)
+
+    # Validar si se seleccionaron platos
     if not order:
         return "😊 No has seleccionado ningún plato del menú. Por favor revisa."
 
-    # Responder con el resumen del pedido y mostrar los distritos
-    district_list = ", ".join(districts)
-    return f"Tu pedido ha sido registrado: {order}. Por favor selecciona un distrito de entrega: {district_list}"
+    # Validar si el distrito es válido
+    if not district:
+        return f"Lo siento, pero no entregamos en ese distrito. Estos son los distritos disponibles: {', '.join(districts)}"
 
-# Función para verificar el distrito
-def verify_district(prompt, districts):
-    for district in districts:
-        if district in prompt:
-            return district  # Retorna el distrito encontrado
-    return None
+    # Calcular el precio total
+    total_price = sum(menu[menu['Plato'].isin(order)]['Precio'])
+
+    # Guardar el pedido
+    save_order(", ".join(order), total_price)
+
+    # Responder con el resumen del pedido
+    return f"Tu pedido ha sido registrado: {', '.join(order)}. El monto total es S/{total_price}. Gracias por tu compra."
+
+# Función para ajustar el tono de la respuesta
+def adjust_tone(response, tone="amigable"):
+    if tone == "amigable":
+        return f"😊 {response}"
+    elif tone == "formal":
+        return f"Estimado cliente, {response}"
+    else:
+        return response
 
 # Inicializar la conversación si no existe en la sesión
 if "messages" not in st.session_state:
@@ -99,32 +127,20 @@ for message in st.session_state.messages:
         with st.chat_message(message["role"], avatar="👤"):
             st.markdown(message["content"])
 
-# Entrada del usuario para el pedido
+# Entrada del usuario
 if prompt := st.chat_input("¿Qué te gustaría pedir?"):
     with st.chat_message("user", avatar="👤"):
         st.markdown(prompt)
 
     # Procesar el pedido y generar la respuesta
-    response = handle_order(prompt, menu)
+    response = handle_order(prompt, menu, districts)
+
+    # Ajustar el tono de la respuesta
+    response = adjust_tone(response, tone="amigable")
 
     with st.chat_message("assistant", avatar="🍲"):
         st.markdown(response)
 
-# Entrada del usuario para el distrito
-if prompt := st.chat_input("¿Cuál es tu distrito y dirección?"):
-    with st.chat_message("user", avatar="👤"):
-        st.markdown(prompt)
-
-    # Verificar el distrito y responder
-    district = verify_district(prompt, districts)
-    
-    if district:
-        response = f"Gracias por proporcionar tu distrito: {district}. Procederemos a entregar tu pedido allí."
-    else:
-        response = f"Lo siento, pero no entregamos en ese distrito. Estos son los distritos disponibles: {', '.join(districts)}"
-
-    with st.chat_message("assistant", avatar="🍲"):
-        st.markdown(response)
 
 
 

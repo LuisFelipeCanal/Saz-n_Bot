@@ -27,12 +27,6 @@ def load_districts(csv_file):
     districts = pd.read_csv(csv_file)
     return districts['Distrito'].tolist()
 
-# Función para mostrar el menú al usuario
-def show_menu(menu):
-    st.markdown("### Menú del día")
-    for index, row in menu.iterrows():
-        st.markdown(f"- **{row['Plato']}**: {row['Descripción']} - Precio: S/{row['Precio']}")
-
 # Función para mostrar el menú en un formato más amigable
 def format_menu(menu):
     if menu.empty:
@@ -129,7 +123,7 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
         st.markdown(prompt)
 
     # Procesar el pedido y generar la respuesta
-    response = handle_order(prompt, menu, districts)
+    response = handle_order(prompt, menu)
 
     # Ajustar el tono de la respuesta
     response = adjust_tone(response, tone="amigable")

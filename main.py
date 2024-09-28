@@ -86,7 +86,7 @@ def handle_order(prompt, menu):
     # Responder con el resumen del pedido y mostrar los distritos
     district_list = ", ".join(districts)
 
-    return f"Tu pedido ha sido registrado: {order}. Por favor selecciona un distrito de entrega: {district_list}"
+    return f"Tu pedido ha sido registrado: {order}. \n\nPor favor selecciona un distrito de entrega: {district_list}"
 
 # Función para verificar el distrito
 def verify_district(prompt, districts):

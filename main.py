@@ -137,7 +137,7 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
         st.markdown(response)
 
     # Entrada del usuario para el distrito
-    prompt= st.chat_input("¿Cuál es tu distrito y dirección?")
+    st.chat_input("¿Cuál es tu distrito y dirección?")
     with st.chat_message("user", avatar="👤"):
         st.markdown(prompt)
 

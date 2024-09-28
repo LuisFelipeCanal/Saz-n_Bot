@@ -87,7 +87,13 @@ def handle_order(prompt, menu):
     district_list = ", ".join(districts)
 
     return f"Tu pedido ha sido registrado: {order}. Por favor selecciona un distrito de entrega: {district_list}"
-    
+
+# Función para verificar el distrito
+def verify_district(prompt, districts):
+    for word in prompt.split(","):
+        if word in district['Distrito'].values:
+            return district  # Retorna el distrito encontrado
+    return None
 # Función para ajustar el tono de la respuesta
 def adjust_tone(response, tone="amigable"):
     if tone == "amigable":
@@ -97,9 +103,10 @@ def adjust_tone(response, tone="amigable"):
     else:
         return response
 
+
 # Inicializar la conversación si no existe en la sesión
-if "messages" not in st.session_state:
-    st.session_state["messages"] = deepcopy(initial_state)
+#if "messages" not in st.session_state:
+ #   st.session_state["messages"] = deepcopy(initial_state)
 
 # Botón para limpiar la conversación
 clear_button = st.button("Limpiar Conversación", key="clear")
@@ -117,7 +124,7 @@ for message in st.session_state.messages:
         with st.chat_message(message["role"], avatar="👤"):
             st.markdown(message["content"])
 
-# Entrada del usuario
+# Entrada del usuario para el pedido
 if prompt := st.chat_input("¿Qué te gustaría pedir?"):
     with st.chat_message("user", avatar="👤"):
         st.markdown(prompt)
@@ -125,12 +132,24 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
     # Procesar el pedido y generar la respuesta
     response = handle_order(prompt, menu)
 
-    # Ajustar el tono de la respuesta
-    response = adjust_tone(response, tone="amigable")
-
     with st.chat_message("assistant", avatar="🍲"):
         st.markdown(response)
 
+# Entrada del usuario para el distrito
+if prompt := st.chat_input("¿Cuál es tu distrito y dirección?"):
+    with st.chat_message("user", avatar="👤"):
+        st.markdown(prompt)
+
+    # Verificar el distrito y responder
+    district = verify_district(prompt, districts)
+    
+    if district:
+        response = f"Gracias por proporcionar tu distrito: {district}. Procederemos a entregar tu pedido allí."
+    else:
+        response = f"Lo siento, pero no entregamos en ese distrito. Estos son los distritos disponibles: {', '.join(districts)}"
+
+    with st.chat_message("assistant", avatar="🍲"):
+        st.markdown(response)
 
 
 

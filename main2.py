@@ -65,7 +65,7 @@ def validate_order(prompt, menu):
 
     # Normalizar el prompt a minúsculas para evitar problemas de coincidencia
     prompt = prompt.lower()
-    print(promt)
+    print(prompt)
     matches = re.findall(pattern, prompt)
 
     for quantity_str, dish_name in matches:

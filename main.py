@@ -2,10 +2,11 @@ import pandas as pd
 import streamlit as st
 from datetime import datetime
 from copy import deepcopy
-import openai
+from openai import OpenAI
+
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 # Cargar el API key de OpenAI desde Streamlit Secrets
-openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 # Configuración inicial de la página
 st.set_page_config(page_title="SazónBot", page_icon=":pot_of_food:")
@@ -30,7 +31,7 @@ def load_districts(csv_file):
 def format_menu(menu):
     if menu.empty:
         return "No hay platos disponibles."
-    
+
     formatted_menu = []
     for idx, row in menu.iterrows():
         formatted_menu.append(
@@ -111,16 +112,16 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
     with st.chat_message("user", avatar="👤"):
         st.markdown(prompt)
 
-    # Llamar a GPT-3.5-turbo para analizar el mensaje del usuario
-    response = openai.ChatCompletion.create(
+    # Llamar a GPT-3.5-turbclient.chat.completions.saje d(
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant for a food ordering service."},
-            {"role": "user", "content": prompt},
-        ]
-    )
-
-    parsed_message = response.choices[0].message['content']
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant for a food ordering service."},
+    ) {"role": "user", "content": prompt},
+                    ]
+            .)
+            
+              parsed_message = response.choices[0].message['content']
 
     # Validar el pedido del usuario
     order_details, total_price = validate_order(parsed_message, menu)

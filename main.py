@@ -121,7 +121,7 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
                     ]
             )
             
-              parsed_message = response.choices[0].message['content']
+    parsed_message = response.choices[0].message['content']
 
     # Validar el pedido del usuario
     order_details, total_price = validate_order(parsed_message, menu)

@@ -1,9 +1,9 @@
-from fuzzywuzzy import process  # Asegúrate de instalar fuzzywuzzy
 import pandas as pd
 import streamlit as st
 from datetime import datetime
 from copy import deepcopy
 from groq import Groq
+import re
 
 # Inicializar el cliente de Groq
 client = Groq(
@@ -14,22 +14,20 @@ client = Groq(
 st.set_page_config(page_title="SazónBot", page_icon=":pot_of_food:")
 st.title("🍲 SazónBot")
 
-# Mostrar mensaje de bienvenida
+# Mensaje de bienvenida
 intro = """¡Bienvenido a Sazón Bot, el lugar donde todos tus antojos de almuerzo se hacen realidad!
 Comienza a chatear con Sazón Bot y descubre qué puedes pedir, cuánto cuesta y cómo realizar tu pago. ¡Estamos aquí para ayudarte a disfrutar del mejor almuerzo!"""
 st.markdown(intro)
 
-# Función para cargar el menú desde un archivo CSV
+# Cargar menú y distritos desde archivos CSV
 def load_menu(csv_file):
     menu = pd.read_csv(csv_file)
     return menu
 
-# Función para cargar los distritos de reparto desde otro CSV
 def load_districts(csv_file):
     districts = pd.read_csv(csv_file)
     return districts['Distrito'].tolist()
 
-# Función para mostrar el menú en un formato más amigable
 def format_menu(menu):
     if menu.empty:
         return "No hay platos disponibles."
@@ -41,7 +39,7 @@ def format_menu(menu):
         )
     return "\n\n".join(formatted_menu)
 
-# Cargar menú y distritos (asegúrate de que los archivos CSV existen)
+# Cargar el menú y distritos
 menu = load_menu("carta.csv")
 districts = load_districts("distritos.csv")
 
@@ -54,38 +52,36 @@ initial_state = [
     },
 ]
 
-# Función para registrar los pedidos en un archivo
+# Función para guardar los pedidos
 def save_order(order, total_price):
     with open("orders.csv", "a") as f:
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         f.write(f"{timestamp}, {order}, {total_price}\n")
 
-# Función para validar si los platos pedidos existen en el menú
+# Mejorar la validación de pedidos
 def validate_order(prompt, menu):
     order_details = {}
     total_price = 0
-    menu_items = menu['Plato'].str.lower().tolist()
+    pattern = r'(\d+)\s*(.*?)(?=\s*(?:y|,|$))'  # Regex para capturar cantidad y plato
 
-    for item in prompt.split(" y "):  # Dividir la entrada por "y" para varios platos
-        item_parts = item.strip().split(" ")
+    matches = re.findall(pattern, prompt.lower())
+
+    for quantity_str, dish_name in matches:
         try:
-            quantity = int(item_parts[0])
-            dish_name = " ".join(item_parts[1:]).strip().lower()
-            
-            # Buscar el plato más similar en el menú
-            best_match, score = process.extractOne(dish_name, menu_items)
-            if score > 80:  # Umbral de coincidencia
-                price = menu.loc[menu['Plato'].str.lower() == best_match, 'Precio'].values[0]
-                order_details[best_match] = quantity
+            quantity = int(quantity_str.strip())
+            dish_name = dish_name.strip()
+            if dish_name in menu['Plato'].str.lower().values:
+                price = menu.loc[menu['Plato'].str.lower() == dish_name, 'Precio'].values[0]
+                order_details[dish_name] = quantity
                 total_price += price * quantity
             else:
                 return None, None  # Si el plato no existe, devolver None
-        except (ValueError, IndexError):
+        except ValueError:
             return None, None
 
     return order_details, total_price
 
-# Función para verificar si el distrito es válido
+# Verificar si el distrito es válido
 def is_valid_district(district, districts):
     return district.lower() in [d.lower() for d in districts]
 
@@ -124,7 +120,7 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
             {"role": "system", "content": "You are a helpful assistant for a food ordering service."},
             {"role": "user", "content": prompt},
         ],
-        model="llama3-8b-8192",
+        model="llama3-8b-8192",  # Cambia esto según el modelo que estés usando
         temperature=0.5,
         max_tokens=150,
         top_p=1,

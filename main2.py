@@ -5,7 +5,9 @@ from copy import deepcopy
 from groq import Groq
 
 # Inicializar el cliente de Groq
-client = Groq()
+client = Groq(
+    api_key=st.secrets["GROQ_API_KEY"],
+)
 
 # Configuración inicial de la página
 st.set_page_config(page_title="SazónBot", page_icon=":pot_of_food:")

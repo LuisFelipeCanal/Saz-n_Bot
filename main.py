@@ -117,9 +117,9 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
         model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant for a food ordering service."},
-    ) {"role": "user", "content": prompt},
+                {"role": "user", "content": prompt},
                     ]
-            .)
+            )
             
               parsed_message = response.choices[0].message['content']
 

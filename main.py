@@ -2,11 +2,10 @@ import pandas as pd
 import streamlit as st
 from datetime import datetime
 from copy import deepcopy
-from openai import OpenAI
 import openai
 
 # Cargar el API key de OpenAI desde Streamlit Secrets
-client=OpenAI(api_key = st.secrets["OPENAI_API_KEY"])
+openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 # Configuración inicial de la página
 st.set_page_config(page_title="SazónBot", page_icon=":pot_of_food:")
@@ -113,7 +112,7 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
         st.markdown(prompt)
 
     # Llamar a GPT-3.5-turbo para analizar el mensaje del usuario
-    response = client.chat.completions.create(
+    response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "You are a helpful assistant for a food ordering service."},
@@ -163,11 +162,3 @@ if st.session_state["order"]:
             save_order(st.session_state["order"], st.session_state["total_price"])
             st.session_state["order"] = None
             st.session_state["total_price"] = 0
-
-
-
-
-
-
-
-

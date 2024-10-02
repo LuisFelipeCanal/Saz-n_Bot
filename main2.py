@@ -58,8 +58,8 @@ def save_order(order, total_price):
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         f.write(f"{timestamp}, {order}, {total_price}\n")
 
-menu['Plato'] = menu['Plato'].str.lower()  # Normalizar a minúsculas
 def validate_order(prompt, menu):
+    menu['Plato'] = menu['Plato'].str.lower()  # Normalizar a minúsculas
     order_details = {}
     total_price = 0
     pattern = r'(\d+)\s*(.*?)(?=\s*(?:y|,|$))'  # Regex para capturar cantidad y plato

@@ -66,18 +66,16 @@ def validate_order(prompt, menu):
 
     # Normalizar el prompt a minúsculas para evitar problemas de coincidencia
     prompt = prompt.lower()
-    st.markdown(prompt)
     matches = re.findall(pattern, prompt)
 
     for quantity_str, dish_name in matches:
         try:
             quantity = int(quantity_str.strip())
-            dish_name = dish_name.strip()
-            # Normalizar el nombre del plato para comparación
-            normalized_dish_name = dish_name.replace(" ", "_").lower()  # Reemplaza espacios por guiones bajos
+            dish_name = dish_name.strip().lower()  # Normaliza el nombre del plato
+
             # Comparar con la lista del menú también normalizada
-            if normalized_dish_name in menu['Plato'].str.replace(" ", "_").str.lower().values:
-                price = menu.loc[menu['Plato'].str.replace(" ", "_").str.lower() == normalized_dish_name, 'Precio'].values[0]
+            if dish_name in menu['Plato'].values:
+                price = menu.loc[menu['Plato'] == dish_name, 'Precio'].values[0]
                 order_details[dish_name] = quantity
                 total_price += price * quantity
             else:
@@ -86,6 +84,7 @@ def validate_order(prompt, menu):
             return None, None
 
     return order_details, total_price
+
 
 # Verificar si el distrito es válido
 def is_valid_district(district, districts):

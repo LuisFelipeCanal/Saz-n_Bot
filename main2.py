@@ -70,8 +70,10 @@ def validate_order(prompt, menu):
         try:
             quantity = int(quantity_str.strip())
             dish_name = dish_name.strip()
-            if dish_name in menu['Plato'].str.lower().values:
-                price = menu.loc[menu['Plato'].str.lower() == dish_name, 'Precio'].values[0]
+            # Normalizar el nombre del plato para comparación
+            normalized_dish_name = dish_name.replace(" ", "_").lower()  # Reemplaza espacios por guiones bajos
+            if normalized_dish_name in menu['Plato'].str.replace(" ", "_").str.lower().values:
+                price = menu.loc[menu['Plato'].str.replace(" ", "_").str.lower() == normalized_dish_name, 'Precio'].values[0]
                 order_details[dish_name] = quantity
                 total_price += price * quantity
             else:
@@ -118,7 +120,7 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
     chat_completion = client.chat.completions.create(
         messages=[
             {"role": "system", "content": "You are a helpful assistant for a food ordering service."},
-            {"role": "user", "content": prompt},
+            {"role": "user", "content": f"Extrae la cantidad y el plato de la siguiente solicitud: '{prompt}'."},
         ],
         model="llama3-8b-8192",  # Cambia esto según el modelo que estés usando
         temperature=0.5,
@@ -128,7 +130,7 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
         stream=False,
     )
 
-    parsed_message = chat_completion.choices[0].message.content
+    parsed_message = chat_completion.choices[0].message.content.strip()
 
     # Validar el pedido del usuario
     order_details, total_price = validate_order(parsed_message, menu)
@@ -140,7 +142,7 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
 
         # Mostrar resumen del pedido
         order_summary = "\n".join([f"{qty} {dish}" for dish, qty in order_details.items()])
-        response_text = f"Tu pedido ha sido registrado:\n\n{order_summary}.\n\n¿Es correcto? (Sí o No)"
+        response_text = f"Tu pedido ha sido registrado:\n\n{order_summary}.\n\n¿Está correcto? (Sí o No)"
     else:
         # Si el plato no existe, mostrar el menú de nuevo
         response_text = f"Uno o más platos no están disponibles. Aquí está el menú otra vez:\n\n{format_menu(menu)}"

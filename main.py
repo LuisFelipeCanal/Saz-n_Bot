@@ -39,7 +39,7 @@ def format_menu(menu):
     return "\n\n".join(formatted_menu)
 
 # Cargar menú y distritos (asegúrate de que los archivos CSV existen)
-menu = load_menu("menu.csv")  # Archivo 'menu.csv' debe tener columnas: Plato, Descripción, Precio
+menu = load_menu("carta.csv")  # Archivo 'menu.csv' debe tener columnas: Plato, Descripción, Precio
 districts = load_districts("distritos.csv")  # Archivo 'distritos.csv' debe tener una columna: Distrito
 
 # Estado inicial del chatbot

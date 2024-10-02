@@ -65,7 +65,7 @@ def validate_order(prompt, menu):
 
     # Normalizar el prompt a minúsculas para evitar problemas de coincidencia
     prompt = prompt.lower()
-
+    print(promt)
     matches = re.findall(pattern, prompt)
 
     for quantity_str, dish_name in matches:
@@ -137,7 +137,7 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
 
     # Validar el pedido del usuario
     order_details, total_price = validate_order(parsed_message, menu)
-    print(order_details)
+    
 
     if order_details:
         # Guardar el pedido en el estado

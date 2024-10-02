@@ -58,13 +58,15 @@ def save_order(order, total_price):
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         f.write(f"{timestamp}, {order}, {total_price}\n")
 
-# Mejorar la validación de pedidos
 def validate_order(prompt, menu):
     order_details = {}
     total_price = 0
     pattern = r'(\d+)\s*(.*?)(?=\s*(?:y|,|$))'  # Regex para capturar cantidad y plato
 
-    matches = re.findall(pattern, prompt.lower())
+    # Normalizar el prompt a minúsculas para evitar problemas de coincidencia
+    prompt = prompt.lower()
+
+    matches = re.findall(pattern, prompt)
 
     for quantity_str, dish_name in matches:
         try:
@@ -72,6 +74,7 @@ def validate_order(prompt, menu):
             dish_name = dish_name.strip()
             # Normalizar el nombre del plato para comparación
             normalized_dish_name = dish_name.replace(" ", "_").lower()  # Reemplaza espacios por guiones bajos
+            # Comparar con la lista del menú también normalizada
             if normalized_dish_name in menu['Plato'].str.replace(" ", "_").str.lower().values:
                 price = menu.loc[menu['Plato'].str.replace(" ", "_").str.lower() == normalized_dish_name, 'Precio'].values[0]
                 order_details[dish_name] = quantity

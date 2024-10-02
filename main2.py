@@ -62,29 +62,29 @@ def validate_order(prompt, menu):
     menu['Plato'] = menu['Plato'].str.lower()  # Normalizar a minúsculas
     order_details = {}
     total_price = 0
-    pattern = r'(\d+)\s*(?:platos|plato)?\s*(de\s*)?(.*?)(?=\s*(?:y|,|$))'
-  # Regex para capturar cantidad y plato
+    pattern = r'(\d+)\s*(?:platos|plato)?\s*(de\s*)?(.*?)(?=\s*(?:y|,|$))'  # Regex actualizado
 
-    # Normalizar el prompt a minúsculas para evitar problemas de coincidencia
-    prompt = prompt.lower()
+    prompt = prompt.lower()  # Normalizar el prompt a minúsculas
     matches = re.findall(pattern, prompt)
 
-    for quantity_str, dish_name in matches:
+    for quantity_str, _, dish_name in matches:
         try:
             quantity = int(quantity_str.strip())
-            dish_name = dish_name.strip().lower()  # Normaliza el nombre del plato
-
-            # Comparar con la lista del menú también normalizada
-            if dish_name in menu['Plato'].values:
-                price = menu.loc[menu['Plato'] == dish_name, 'Precio'].values[0]
+            dish_name = dish_name.strip()
+            # Normalizar el nombre del plato
+            normalized_dish_name = dish_name.replace(" ", "_").lower()
+            # Comparar con el menú
+            if normalized_dish_name in menu['Plato'].str.replace(" ", "_").str.lower().values:
+                price = menu.loc[menu['Plato'].str.replace(" ", "_").str.lower() == normalized_dish_name, 'Precio'].values[0]
                 order_details[dish_name] = quantity
                 total_price += price * quantity
             else:
-                return None, None  # Si el plato no existe, devolver None
+                return None, None  # Plato no existe
         except ValueError:
             return None, None
 
     return order_details, total_price
+
 
 
 # Verificar si el distrito es válido

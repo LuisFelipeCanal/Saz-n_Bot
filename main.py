@@ -119,7 +119,7 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
                 {"role": "system", "content": "You are a helpful assistant for a food ordering service."},
                 {"role": "user", "content": prompt},
             ],
-            max_tokens=150  # Establece el límite de tokens en la respuesta
+            max_tokens=150, # Establece el límite de tokens en la respuesta
             temperature=0.5
         )
 

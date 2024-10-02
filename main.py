@@ -112,18 +112,17 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
     with st.chat_message("user", avatar="👤"):
         st.markdown(prompt)
 
-    # Llamar a GPT-3.5-turbclient.chat.completions.saje d(
+    # Llamar a GPT-3.5 con un límite de tokens en la respuesta
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+            model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant for a food ordering service."},
                 {"role": "user", "content": prompt},
-                    ]
-            )
-            
+            ],
+            max_tokens=150  # Establece el límite de tokens en la respuesta
+        )
+
     parsed_message = response.choices[0].message['content']
-    st.error("Se ha alcanzado el límite de solicitudes a la API. Inténtalo de nuevo más tarde.")
-    time.sleep(5)
 
     # Validar el pedido del usuario
     order_details, total_price = validate_order(parsed_message, menu)

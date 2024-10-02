@@ -58,6 +58,7 @@ def save_order(order, total_price):
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         f.write(f"{timestamp}, {order}, {total_price}\n")
 
+menu['Plato'] = menu['Plato'].str.lower()  # Normalizar a minúsculas
 def validate_order(prompt, menu):
     order_details = {}
     total_price = 0

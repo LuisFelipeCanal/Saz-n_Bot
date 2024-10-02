@@ -120,6 +120,7 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
                 {"role": "user", "content": prompt},
             ],
             max_tokens=150  # Establece el límite de tokens en la respuesta
+            temperature=0.5
         )
 
     parsed_message = response.choices[0].message['content']

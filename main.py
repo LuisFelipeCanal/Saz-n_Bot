@@ -122,6 +122,8 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
             )
             
     parsed_message = response.choices[0].message['content']
+    st.error("Se ha alcanzado el límite de solicitudes a la API. Inténtalo de nuevo más tarde.")
+    time.sleep(5)
 
     # Validar el pedido del usuario
     order_details, total_price = validate_order(parsed_message, menu)

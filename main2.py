@@ -1,3 +1,4 @@
+from fuzzywuzzy import process  # Asegúrate de instalar fuzzywuzzy
 import pandas as pd
 import streamlit as st
 from datetime import datetime
@@ -41,8 +42,8 @@ def format_menu(menu):
     return "\n\n".join(formatted_menu)
 
 # Cargar menú y distritos (asegúrate de que los archivos CSV existen)
-menu = load_menu("carta.csv")  # Archivo 'menu.csv' debe tener columnas: Plato, Descripción, Precio
-districts = load_districts("distritos.csv")  # Archivo 'distritos.csv' debe tener una columna: Distrito
+menu = load_menu("carta.csv")
+districts = load_districts("distritos.csv")
 
 # Estado inicial del chatbot
 initial_state = [
@@ -63,15 +64,19 @@ def save_order(order, total_price):
 def validate_order(prompt, menu):
     order_details = {}
     total_price = 0
+    menu_items = menu['Plato'].str.lower().tolist()
+
     for item in prompt.split(" y "):  # Dividir la entrada por "y" para varios platos
         item_parts = item.strip().split(" ")
         try:
             quantity = int(item_parts[0])
             dish_name = " ".join(item_parts[1:]).strip().lower()
-            menu_names = menu['Plato'].str.lower().values
-            if dish_name in menu_names:
-                price = menu.loc[menu['Plato'].str.lower() == dish_name, 'Precio'].values[0]
-                order_details[dish_name] = quantity
+            
+            # Buscar el plato más similar en el menú
+            best_match, score = process.extractOne(dish_name, menu_items)
+            if score > 80:  # Umbral de coincidencia
+                price = menu.loc[menu['Plato'].str.lower() == best_match, 'Precio'].values[0]
+                order_details[best_match] = quantity
                 total_price += price * quantity
             else:
                 return None, None  # Si el plato no existe, devolver None
@@ -119,7 +124,7 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
             {"role": "system", "content": "You are a helpful assistant for a food ordering service."},
             {"role": "user", "content": prompt},
         ],
-        model="llama3-8b-8192",  # Cambia esto según el modelo que estés usando
+        model="llama3-8b-8192",
         temperature=0.5,
         max_tokens=150,
         top_p=1,

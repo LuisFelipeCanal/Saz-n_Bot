@@ -135,7 +135,7 @@ if st.session_state["step"] == 0:
         )
 
         parsed_message = chat_completion.choices[0].message.content.strip()
-
+        st.markdown(parsed_message)
         # Validar el pedido del usuario
         order_details, total_price = validate_order(parsed_message, menu)
         

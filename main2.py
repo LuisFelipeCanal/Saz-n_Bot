@@ -59,7 +59,7 @@ def save_order(order, total_price):
         f.write(f"{timestamp}, {order}, {total_price}\n")
 
 def validate_order(prompt, menu):
-    menu['Plato'] = menu['Plato'].str.lower()  # Normalizar a minúsculas
+    ##menu['Plato'] = menu['Plato'].str.lower()  # Normalizar a minúsculas
     order_details = {}
     total_price = 0
     pattern = r'(\d+)\s*(?:platos|plato)?\s*(de\s*)?(.*?)(?=\s*(?:y|,|$))'  # Regex actualizado
@@ -72,10 +72,10 @@ def validate_order(prompt, menu):
             quantity = int(quantity_str.strip())
             dish_name = dish_name.strip()
             # Normalizar el nombre del plato
-            normalized_dish_name = dish_name.replace(" ", "_").lower()
+            normalized_dish_name = dish_name.lower()
             # Comparar con el menú
-            if normalized_dish_name in menu['Plato'].str.replace(" ", "_").str.lower().values:
-                price = menu.loc[menu['Plato'].str.replace(" ", "_").str.lower() == normalized_dish_name, 'Precio'].values[0]
+            if normalized_dish_name in menu['Plato'].str.lower().values:
+                price = menu.loc[menu['Plato'].str.lower() == normalized_dish_name, 'Precio'].values[0]
                 order_details[dish_name] = quantity
                 total_price += price * quantity
             else:

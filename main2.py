@@ -62,7 +62,7 @@ def validate_order(prompt, menu):
     ##menu['Plato'] = menu['Plato'].str.lower()  # Normalizar a minúsculas
     order_details = {}
     total_price = 0
-    pattern = r'(\d+)\s*(?:platos|plato)?\s*(de\s*)?(.*?)(?=\s*(?:y|,|$))'
+    pattern = r'(\d+)\s*(?:platos|plato)?\s*(de\s*)?(.*?)(?=\s*(?:y|,|$))' 
 
     prompt = prompt.lower()  # Normalizar el prompt a minúsculas
     matches = re.findall(pattern, prompt)

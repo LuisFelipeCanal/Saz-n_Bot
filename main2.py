@@ -59,14 +59,12 @@ def save_order(order, total_price):
         f.write(f"{timestamp}, {order}, {total_price}\n")
 
 def validate_order(prompt, menu):
-    ##menu['Plato'] = menu['Plato'].str.lower()  # Normalizar a minúsculas
     order_details = {}
     total_price = 0
     pattern = r'(\d+)\s*(?:platos|plato)?\s*([a-zA-Z\s]+)'   # Regex actualizado
 
     prompt = prompt.replace('\n', '').lower().strip()  # Normalizar el prompt a minúsculas
     matches = re.findall(pattern, prompt)
-    ##st.markdown(matches)
 
     for quantity_str, dish_name in matches:
         try:
@@ -85,8 +83,6 @@ def validate_order(prompt, menu):
             return None, None
 
     return order_details, total_price
-
-
 
 # Verificar si el distrito es válido
 def is_valid_district(district, districts):
@@ -109,21 +105,15 @@ if clear_button:
 for message in st.session_state.messages:
     if message["role"] == "system":
         continue
-    elif message["role"] == "assistant":
-        with st.chat_message(message["role"], avatar="🍲"):
-            st.markdown(message["content"])
-    else:
-        with st.chat_message(message["role"], avatar="👤"):
-            st.markdown(message["content"])
+    with st.chat_message(message["role"], avatar="🍲" if message["role"] == "assistant" else "👤"):
+        st.markdown(message["content"])
 
 def format_order_table(order_details):
-    # Crear los encabezados en formato de tabla Markdown
     table = "| Cantidad | Plato |\n"
     table += "|----------|-------|\n"
     
-    # Añadir los detalles del pedido solo si hay datos válidos
     for dish, quantity in order_details.items():
-        if dish and quantity:  # Verifica que no estén vacíos
+        if dish and quantity:
             table += f"| {quantity}        | {dish}  |\n"
     
     return table
@@ -135,11 +125,9 @@ if user_input := st.chat_input("¿Qué te gustaría pedir?"):
 
     # Llamar a Groq para obtener una respuesta
     chat_completion = client.chat.completions.create(
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant for a food ordering service."},
-            {"role": "user", "content": f"Extrae la cantidad y el plato de la siguiente solicitud: '{user_input}'.Limitate a solo devolver la cantidad y el plato de la solicitud sin un caracter adicional."},
-        ],
-        model="llama3-8b-8192",  # Cambia esto según el modelo que estés usando
+        messages=[{"role": "system", "content": "You are a helpful assistant for a food ordering service."},
+                  {"role": "user", "content": f"Extrae la cantidad y el plato de la siguiente solicitud: '{user_input}'. Limitate a solo devolver la cantidad y el plato de la solicitud sin un caracter adicional."}],
+        model="llama3-8b-8192",
         temperature=0.5,
         max_tokens=150,
         top_p=1,
@@ -149,55 +137,43 @@ if user_input := st.chat_input("¿Qué te gustaría pedir?"):
 
     parsed_message = chat_completion.choices[0].message.content.strip()
 
-    ##st.markdown(parsed_message)
     # Validar el pedido del usuario
     order_details, total_price = validate_order(parsed_message, menu)
     
-
     if order_details:
-        # Guardar el pedido en el estado
         st.session_state["order"] = order_details
         st.session_state["total_price"] = total_price
         response_text = f"Tu pedido ha sido registrado:\n\n{format_order_table(order_details)}\n\n¿Está correcto? (Sí o No)"
     else:
-        # Si el plato no existe, mostrar el menú de nuevo
         response_text = f"Uno o más platos no están disponibles. Aquí está el menú otra vez:\n\n{format_menu(menu)}"
 
-    # Mostrar la respuesta del asistente
     with st.chat_message("assistant", avatar="🍲"):
         st.markdown(response_text)
 
 # Si el usuario ha confirmado que el pedido es correcto
-    if user_input.lower() == "si" and st.session_state["order"]:
-        response_text = "Por favor selecciona un distrito de entrega:"
-        # Mostrar distritos disponibles
-        response_text += f"\n\nEstos son los distritos disponibles: {', '.join(districts)}"
-        
-        # Mostrar la respuesta del asistente
+if user_input.lower() == "si" and st.session_state["order"]:
+    response_text = "Por favor selecciona un distrito de entrega:"
+    response_text += f"\n\nEstos son los distritos disponibles: {', '.join(districts)}"
+    
+    with st.chat_message("assistant", avatar="🍲"):
+        st.markdown(response_text)
+
+    if district_input := st.chat_input("Ingresa el distrito:"):
+        with st.chat_message("user", avatar="👤"):
+            st.markdown(district_input)
+
+        if is_valid_district(district_input, districts):
+            response_text = f"Gracias por proporcionar tu distrito: {district_input}. Procederemos a entregar tu pedido allí. ¡Que disfrutes de tu almuerzo!"
+            save_order(st.session_state["order"], st.session_state["total_price"])
+            st.session_state["order"] = None
+            st.session_state["total_price"] = 0
+        else:
+            response_text = f"Lo siento, no entregamos en ese distrito. Estos son los distritos disponibles: {', '.join(districts)}"
+
         with st.chat_message("assistant", avatar="🍲"):
             st.markdown(response_text)
 
-        if district_input := st.chat_input("Ingresa el distrito:"):
-            with st.chat_message("user", avatar="👤"):
-                st.markdown(district_input)
-
-            # Verificar si el distrito es válido
-            if is_valid_district(district_input, districts):
-                response_text = f"Gracias por proporcionar tu distrito: {district_input}. Procederemos a entregar tu pedido allí. ¡Que disfrutes de tu almuerzo!"
-                # Guardar el pedido en el archivo
-                save_order(st.session_state["order"], st.session_state["total_price"])
-                st.session_state["order"] = None
-                st.session_state["total_price"] = 0
-            else:
-                response_text = f"Lo siento, no entregamos en ese distrito. Estos son los distritos disponibles: {', '.join(districts)}"
-
-            # Mostrar la respuesta del asistente
-            with st.chat_message("assistant", avatar="🍲"):
-                st.markdown(response_text)
-
-        elif user_input.lower() == "no":
-            response_text = "Entiendo, puedes volver a hacer tu pedido."
-
-            # Mostrar la respuesta del asistente
-            with st.chat_message("assistant", avatar="🍲"):
-                st.markdown(response_text)
+elif user_input.lower() == "no":
+    response_text = "Entiendo, puedes volver a hacer tu pedido."
+    with st.chat_message("assistant", avatar="🍲"):
+        st.markdown(response_text)

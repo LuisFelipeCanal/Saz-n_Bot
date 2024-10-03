@@ -73,6 +73,7 @@ def validate_order(prompt, menu):
             dish_name = dish_name.strip()
             # Normalizar el nombre del plato
             normalized_dish_name = dish_name.lower()
+            st.markdown(normalized_dish_name)
             # Comparar con el menú
             if normalized_dish_name in menu['Plato'].str.lower().values:
                 price = menu.loc[menu['Plato'].str.lower() == normalized_dish_name, 'Precio'].values[0]

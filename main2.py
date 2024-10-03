@@ -169,22 +169,27 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
 
 # Si hay un pedido registrado, preguntar por el distrito
 if st.session_state["order"]:
-    if district_input := st.chat_input("Por favor selecciona un distrito de entrega:"):
+    if confirmation := st.chat_input("¿Está correcto? (Sí o No)"):
         with st.chat_message("user", avatar="👤"):
-            st.markdown(district_input)
+            st.markdown(confirmation)
 
-        # Verificar si el distrito es válido
-        if is_valid_district(district_input, districts):
-            response_text = f"Gracias por proporcionar tu distrito: {district_input}. Procederemos a entregar tu pedido allí. ¡Que disfrutes de tu almuerzo!"
+        if confirmation.lower() == "sí":
+            district_input = st.chat_input("Por favor selecciona un distrito de entrega:")
+            if district_input:
+                with st.chat_message("user", avatar="👤"):
+                    st.markdown(district_input)
+
+                # Verificar si el distrito es válido
+                if is_valid_district(district_input, districts):
+                    response_text = f"Gracias por proporcionar tu distrito: {district_input}. Procederemos a entregar tu pedido allí. ¡Que disfrutes de tu almuerzo!"
+                    save_order(st.session_state["order"], st.session_state["total_price"])
+                    st.session_state["order"] = None
+                    st.session_state["total_price"] = 0
+                else:
+                    response_text = f"Lo siento, no entregamos en ese distrito. Estos son los distritos disponibles: {', '.join(districts)}"
         else:
-            response_text = f"Lo siento, no entregamos en ese distrito. Estos son los distritos disponibles: {', '.join(districts)}"
+            response_text = "Entiendo, puedes volver a hacer tu pedido."
 
         # Mostrar la respuesta del asistente
         with st.chat_message("assistant", avatar="🍲"):
             st.markdown(response_text)
-
-        # Si el distrito es válido, guardar el pedido en el archivo
-        if is_valid_district(district_input, districts):
-            save_order(st.session_state["order"], st.session_state["total_price"])
-            st.session_state["order"] = None
-            st.session_state["total_price"] = 0

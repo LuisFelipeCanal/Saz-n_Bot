@@ -136,7 +136,7 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
     # Llamar a Groq para obtener una respuesta
     chat_completion = client.chat.completions.create(
         messages=[
-            {"role": "system", "content": "Eres un asistente útil para un servicio de pedidos de comida."},
+            {"role": "system", "content": "You are a helpful assistant for a food ordering service."},
             {"role": "user", "content": f"Extrae la cantidad y el plato de la siguiente solicitud: '{prompt}'.Limitate a solo devolver la cantidad y los plato sin un caracter adicional."},
         ],
         model="llama3-8b-8192",  # Cambia esto según el modelo que estés usando

@@ -144,6 +144,8 @@ if user_input := st.chat_input("¿Qué te gustaría pedir?"):
         # Guardar el pedido en el estado
         st.session_state["order"] = order_details
         st.session_state["total_price"] = total_price
+        
+        # Solicitar confirmación del pedido
         response_text = f"Tu pedido ha sido registrado:\n\n{format_order_table(order_details)}\n\n¿Está correcto? (Sí o No)"
     else:
         # Si el plato no existe, mostrar el menú de nuevo
@@ -153,44 +155,36 @@ if user_input := st.chat_input("¿Qué te gustaría pedir?"):
     with st.chat_message("assistant", avatar="🍲"):
         st.markdown(response_text)
 
-    # Aquí se maneja la confirmación del pedido
-    if response_text.startswith("Tu pedido ha sido registrado"):
-        if user_confirmation := st.chat_input("¿Está correcto? (Sí o No)"):
-            with st.chat_message("user", avatar="👤"):
-                st.markdown(user_confirmation)
+# Manejo de confirmación del pedido
+if "order" in st.session_state and st.session_state["order"]:
+    if confirmation_input := st.chat_input("¿Está correcto? (Sí o No)"):
+        with st.chat_message("user", avatar="👤"):
+            st.markdown(confirmation_input)
 
-            # Si el usuario ha confirmado que el pedido es correcto
-            if user_confirmation.lower() == "si" and st.session_state["order"]:
-                response_text = "Por favor selecciona un distrito de entrega:"
-                # Mostrar distritos disponibles
-                response_text += f"\n\nEstos son los distritos disponibles: {', '.join(districts)}"
-                
-                # Mostrar la respuesta del asistente
+        # Confirmar pedido
+        if confirmation_input.lower() == "si":
+            response_text = "Por favor selecciona un distrito de entrega:"
+            response_text += f"\n\nEstos son los distritos disponibles: {', '.join(districts)}"
+            with st.chat_message("assistant", avatar="🍲"):
+                st.markdown(response_text)
+
+            if district_input := st.chat_input("Ingresa el distrito:"):
+                with st.chat_message("user", avatar="👤"):
+                    st.markdown(district_input)
+
+                # Verificar si el distrito es válido
+                if is_valid_district(district_input, districts):
+                    response_text = f"Gracias por proporcionar tu distrito: {district_input}. Procederemos a entregar tu pedido allí. ¡Que disfrutes de tu almuerzo!"
+                    save_order(st.session_state["order"], st.session_state["total_price"])
+                    st.session_state["order"] = None
+                    st.session_state["total_price"] = 0
+                else:
+                    response_text = f"Lo siento, no entregamos en ese distrito. Estos son los distritos disponibles: {', '.join(districts)}"
+
                 with st.chat_message("assistant", avatar="🍲"):
                     st.markdown(response_text)
 
-                if district_input := st.chat_input("Ingresa el distrito:"):
-                    with st.chat_message("user", avatar="👤"):
-                        st.markdown(district_input)
-
-                    # Verificar si el distrito es válido
-                    if is_valid_district(district_input, districts):
-                        response_text = f"Gracias por proporcionar tu distrito: {district_input}. Procederemos a entregar tu pedido allí. ¡Que disfrutes de tu almuerzo!"
-                        # Guardar el pedido en el archivo
-                        save_order(st.session_state["order"], st.session_state["total_price"])
-                        st.session_state["order"] = None
-                        st.session_state["total_price"] = 0
-                    else:
-                        response_text = f"Lo siento, no entregamos en ese distrito. Estos son los distritos disponibles: {', '.join(districts)}"
-
-                    # Mostrar la respuesta del asistente
-                    with st.chat_message("assistant", avatar="🍲"):
-                        st.markdown(response_text)
-
-            elif user_confirmation.lower() == "no":
-                response_text = "Entiendo, puedes volver a hacer tu pedido."
-
-                # Mostrar la respuesta del asistente
-                with st.chat_message("assistant", avatar="🍲"):
-                    st.markdown(response_text)
-
+        elif confirmation_input.lower() == "no":
+            response_text = "Entiendo, puedes volver a hacer tu pedido."
+            with st.chat_message("assistant", avatar="🍲"):
+                st.markdown(response_text)

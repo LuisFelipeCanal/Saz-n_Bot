@@ -71,7 +71,7 @@ def validate_order(prompt, menu):
     for quantity_str, _, dish_name in matches:
         try:
             quantity = int(quantity_str.strip())
-            dish_name = dish_name.strip()
+            dish_name = dish_name.strip().replace('\n', '')
             # Normalizar el nombre del plato
             normalized_dish_name = dish_name.lower()
             # Comparar con el menú

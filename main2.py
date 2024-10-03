@@ -117,7 +117,8 @@ if user_input := st.chat_input("¿Qué te gustaría pedir?"):
 
     # Manejar el flujo de conversación
     if st.session_state["current_step"] == "order":
-        # Llamar a Groq para obtener una respuesta
+        response_text = "Detalles de tu pedido aquí."
+
         chat_completion = client.chat.completions.create(
             messages=[
                 {"role": "system", "content": "You are a helpful assistant for a food ordering service."},
@@ -160,7 +161,8 @@ if user_input := st.chat_input("¿Qué te gustaría pedir?"):
             st.session_state["current_step"] = "order"  # Reiniciar el flujo
         else:
             response_text = f"Lo siento, no entregamos en ese distrito. Estos son los distritos disponibles: {', '.join(districts)}"
-
+    else:
+        response_text = "Por favor, elige un pedido."
     # Mostrar la respuesta del asistente
     with st.chat_message("assistant", avatar="🍲"):
         st.markdown(response_text)

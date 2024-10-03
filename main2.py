@@ -158,11 +158,6 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
         # Guardar el pedido en el estado
         st.session_state["order"] = order_details
         st.session_state["total_price"] = total_price
-
-        # Mostrar resumen del pedido
-        order_summary = ""
-        for dish, quantity in order_details.items():
-            order_summary += f"• {quantity}x {dish}\n"
         response_text = f"Tu pedido ha sido registrado:\n\n{format_order_table(order_details)}\n\n¿Está correcto? (Sí o No)"
     else:
         # Si el plato no existe, mostrar el menú de nuevo

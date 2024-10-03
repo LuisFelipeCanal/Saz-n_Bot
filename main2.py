@@ -64,14 +64,14 @@ def validate_order(prompt, menu):
     total_price = 0
     pattern = r'(\d+)\s*(?:platos|plato)?\s*([a-zA-Z\s]+)'   # Regex actualizado
 
-    prompt = prompt.lower()  # Normalizar el prompt a minúsculas
+    prompt = prompt.replace('\n', ' ').lower().strip()  # Normalizar el prompt a minúsculas
     matches = re.findall(pattern, prompt)
     st.markdown(matches)
 
     for quantity_str, _, dish_name in matches:
         try:
             quantity = int(quantity_str.strip())
-            dish_name = dish_name.strip().replace('\n', '')
+            dish_name = dish_name.strip()
             # Normalizar el nombre del plato
             normalized_dish_name = dish_name.lower()
             # Comparar con el menú

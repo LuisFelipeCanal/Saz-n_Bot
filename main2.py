@@ -68,7 +68,7 @@ def validate_order(prompt, menu):
     matches = re.findall(pattern, prompt)
     st.markdown(matches)
 
-    for quantity_str, _, dish_name in matches:
+    for quantity_str, dish_name in matches:
         try:
             quantity = int(quantity_str.strip())
             dish_name = dish_name.strip()

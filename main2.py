@@ -19,14 +19,10 @@ intro = """¡Bienvenido a Sazón Bot, el lugar donde todos tus antojos de almuer
 Comienza a chatear con Sazón Bot y descubre qué puedes pedir, cuánto cuesta y cómo realizar tu pago. ¡Estamos aquí para ayudarte a disfrutar del mejor almuerzo!"""
 st.markdown(intro)
 
-# Cargar menú y distritos desde archivos CSV
+# Cargar menú desde archivo CSV
 def load_menu(csv_file):
     menu = pd.read_csv(csv_file)
     return menu
-
-def load_districts(csv_file):
-    districts = pd.read_csv(csv_file)
-    return districts['Distrito'].tolist()
 
 def format_menu(menu):
     if menu.empty:
@@ -39,9 +35,8 @@ def format_menu(menu):
         )
     return "\n\n".join(formatted_menu)
 
-# Cargar el menú y distritos
+# Cargar el menú
 menu = load_menu("carta.csv")
-districts = load_districts("distritos.csv")
 
 # Estado inicial del chatbot
 initial_state = [
@@ -53,15 +48,15 @@ initial_state = [
 ]
 
 # Función para guardar los pedidos
-def save_order(order, total_price):
+def save_order(order, total_price, district):
     with open("orders.csv", "a") as f:
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        f.write(f"{timestamp}, {order}, {total_price}\n")
+        f.write(f"{timestamp}, {order}, {total_price}, {district}\n")
 
 def validate_order(prompt, menu):
     order_details = {}
     total_price = 0
-    pattern = r'(\d+)\s*(?:platos|plato)?\s*([a-zA-Z\s]+)'   # Regex actualizado
+    pattern = r'(\d+)\s*(?:platos|plato)?\s*([a-zA-Z\s]+)'  # Regex actualizado
 
     prompt = prompt.replace('\n', '').lower().strip()  # Normalizar el prompt a minúsculas
     matches = re.findall(pattern, prompt)
@@ -84,22 +79,9 @@ def validate_order(prompt, menu):
 
     return order_details, total_price
 
-# Verificar si el distrito es válido
-def is_valid_district(district, districts):
-    return district.lower() in [d.lower() for d in districts]
-
 # Inicializar la conversación si no existe en la sesión
 if "messages" not in st.session_state:
     st.session_state["messages"] = deepcopy(initial_state)
-    st.session_state["order"] = None
-    st.session_state["total_price"] = 0
-
-# Botón para limpiar la conversación
-clear_button = st.button("Limpiar Conversación", key="clear")
-if clear_button:
-    st.session_state["messages"] = deepcopy(initial_state)
-    st.session_state["order"] = None
-    st.session_state["total_price"] = 0
 
 # Mostrar el historial de la conversación
 for message in st.session_state.messages:
@@ -108,25 +90,18 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"], avatar="🍲" if message["role"] == "assistant" else "👤"):
         st.markdown(message["content"])
 
-def format_order_table(order_details):
-    table = "| Cantidad | Plato |\n"
-    table += "|----------|-------|\n"
-    
-    for dish, quantity in order_details.items():
-        if dish and quantity:
-            table += f"| {quantity}        | {dish}  |\n"
-    
-    return table
-
 # Entrada del usuario para el pedido
-if user_input := st.chat_input("¿Qué te gustaría pedir?"):
+if user_input := st.chat_input("¿Qué te gustaría pedir? (Ejemplo: 2 platos de arroz con pollo)"):
     with st.chat_message("user", avatar="👤"):
         st.markdown(user_input)
+
+    # Agregar el mensaje del usuario al historial
+    st.session_state.messages.append({"role": "user", "content": user_input})
 
     # Llamar a Groq para obtener una respuesta
     chat_completion = client.chat.completions.create(
         messages=[{"role": "system", "content": "You are a helpful assistant for a food ordering service."},
-                  {"role": "user", "content": f"Extrae la cantidad y el plato de la siguiente solicitud: '{user_input}'.Limitate a solo devolver la cantidad y el plato de la solicitud sin un caracter adicional."}],
+                  {"role": "user", "content": f"Extrae la cantidad y el plato de la siguiente solicitud: '{user_input}'. Limitate a solo devolver la cantidad y el plato sin un carácter adicional."}],
         model="llama3-8b-8192",
         temperature=0.5,
         max_tokens=150,
@@ -141,12 +116,23 @@ if user_input := st.chat_input("¿Qué te gustaría pedir?"):
     order_details, total_price = validate_order(parsed_message, menu)
 
     if order_details:
-        # Guardar el pedido en el estado
-        st.session_state["order"] = order_details
-        st.session_state["total_price"] = total_price
-        
-        # Solicitar confirmación del pedido
-        response_text = f"Tu pedido ha sido registrado:\n\n{format_order_table(order_details)}\n\n¿Está correcto? (Sí o No)"
+        # Preguntar por el distrito
+        if district_input := st.chat_input("¿En qué distrito te gustaría recibir tu pedido? (Ejemplo: Miraflores)"):
+            with st.chat_message("user", avatar="👤"):
+                st.markdown(district_input)
+
+            # Agregar el mensaje del usuario al historial
+            st.session_state.messages.append({"role": "user", "content": district_input})
+
+            # Extraer el distrito
+            district = district_input.strip()
+
+            # Guardar el pedido
+            save_order(order_details, total_price, district)
+            response_text = f"Tu pedido ha sido registrado:\n\n{format_order_table(order_details)}\n\nDistrito: {district}\n\n¡Gracias por tu pedido! Disfruta de tu almuerzo."
+        else:
+            response_text = "No se especificó el distrito. Por favor, intenta de nuevo."
+
     else:
         # Si el plato no existe, mostrar el menú de nuevo
         response_text = f"Uno o más platos no están disponibles. Aquí está el menú otra vez:\n\n{format_menu(menu)}"
@@ -155,36 +141,5 @@ if user_input := st.chat_input("¿Qué te gustaría pedir?"):
     with st.chat_message("assistant", avatar="🍲"):
         st.markdown(response_text)
 
-# Manejo de confirmación del pedido
-if "order" in st.session_state and st.session_state["order"]:
-    if confirmation_input := st.chat_input("¿Está correcto? (Sí o No)"):
-        with st.chat_message("user", avatar="👤"):
-            st.markdown(confirmation_input)
-
-        # Confirmar pedido
-        if confirmation_input.lower() == "si":
-            response_text = "Por favor selecciona un distrito de entrega:"
-            response_text += f"\n\nEstos son los distritos disponibles: {', '.join(districts)}"
-            with st.chat_message("assistant", avatar="🍲"):
-                st.markdown(response_text)
-
-            if district_input := st.chat_input("Ingresa el distrito:"):
-                with st.chat_message("user", avatar="👤"):
-                    st.markdown(district_input)
-
-                # Verificar si el distrito es válido
-                if is_valid_district(district_input, districts):
-                    response_text = f"Gracias por proporcionar tu distrito: {district_input}. Procederemos a entregar tu pedido allí. ¡Que disfrutes de tu almuerzo!"
-                    save_order(st.session_state["order"], st.session_state["total_price"])
-                    st.session_state["order"] = None
-                    st.session_state["total_price"] = 0
-                else:
-                    response_text = f"Lo siento, no entregamos en ese distrito. Estos son los distritos disponibles: {', '.join(districts)}"
-
-                with st.chat_message("assistant", avatar="🍲"):
-                    st.markdown(response_text)
-
-        elif confirmation_input.lower() == "no":
-            response_text = "Entiendo, puedes volver a hacer tu pedido."
-            with st.chat_message("assistant", avatar="🍲"):
-                st.markdown(response_text)
+    # Agregar la respuesta del asistente al historial
+    st.session_state.messages.append({"role": "assistant", "content": response_text})

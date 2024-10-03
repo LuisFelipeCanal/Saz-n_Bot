@@ -66,7 +66,9 @@ def validate_order(prompt, menu):
 
     prompt = prompt.lower()  # Normalizar el prompt a minúsculas
     matches = re.findall(pattern, prompt)
+    platos=menu['Plato'].str.lower().values
     st.markdown(matches)
+    st.markdown(platos)
     for quantity_str, _, dish_name in matches:
         try:
             quantity = int(quantity_str.strip())

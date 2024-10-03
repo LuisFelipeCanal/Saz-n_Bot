@@ -123,7 +123,8 @@ def format_order_table(order_details):
     
     # Añadir los detalles del pedido solo si hay datos válidos
     for dish, quantity in order_details.items():
-        if dish and quantity:  # Verifica que no estén vacíos
+        # Si dish y quantity no están vacíos ni son nulos
+        if dish and quantity and quantity > 0:
             table += f"| {quantity}        | {dish}  |\n"
     
     return table

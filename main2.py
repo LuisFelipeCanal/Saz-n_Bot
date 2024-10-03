@@ -137,7 +137,7 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
     chat_completion = client.chat.completions.create(
         messages=[
             {"role": "system", "content": "You are a helpful assistant for a food ordering service."},
-            {"role": "user", "content": f"Extrae la cantidad y los nombres de los platos de la siguiente solicitud: '{prompt}'. La respuesta debe estar en formato JSON con cada plato en su propio diccionario, donde cada diccionario tiene una clave 'cantidad' y una clave 'plato'. Ejemplo de formato: [{'cantidad': 2, 'plato': 'Arroz con Pollo'}, {'cantidad': 1, 'plato': 'Tallarines Verdes'}]."},
+            {"role": "user", "content": f"Extrae la cantidad y los platos de la siguiente solicitud: '{prompt}'.La respuesta debe estar en formato JSON con cada plato en su propio diccionario, donde cada diccionario tiene una clave 'cantidad' y una clave 'plato'. Ejemplo de formato: ['cantidad': 2, 'plato': 'Arroz con Pollo', 'cantidad': 1, 'plato': 'Tallarines Verdes']."},
         ],
         model="llama3-8b-8192",  # Cambia esto según el modelo que estés usando
         temperature=0.5,

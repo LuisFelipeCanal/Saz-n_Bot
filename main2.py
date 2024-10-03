@@ -137,7 +137,7 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
     chat_completion = client.chat.completions.create(
         messages=[
             {"role": "system", "content": "You are a helpful assistant for a food ordering service."},
-            {"role": "user", "content": f"Extrae la cantidad y el plato de la siguiente solicitud: '{prompt}', limitate a solo devolver la cantidad y el plato sin ningun caracter adicional."},
+            {"role": "user", "content": f"Extrae la cantidad y el plato de la siguiente solicitud: '{prompt}', limitate a solo devolver las cantidades y los platos sin ningun caracter adicional."},
         ],
         model="llama3-8b-8192",  # Cambia esto según el modelo que estés usando
         temperature=0.5,

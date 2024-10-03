@@ -168,7 +168,7 @@ if user_input := st.chat_input("¿Qué te gustaría pedir?"):
         st.markdown(response_text)
 
 # Si el usuario ha confirmado que el pedido es correcto
-    if user_input.lower() == "sí" and st.session_state["order"]:
+    if user_input.lower() == "si" and st.session_state["order"]:
         response_text = "Por favor selecciona un distrito de entrega:"
         # Mostrar distritos disponibles
         response_text += f"\n\nEstos son los distritos disponibles: {', '.join(districts)}"

@@ -123,8 +123,7 @@ def format_order_table(order_details):
     
     # Añadir los detalles del pedido solo si hay datos válidos
     for dish, quantity in order_details.items():
-        # Si dish y quantity no están vacíos ni son nulos
-        if dish and quantity and quantity > 0:
+        if dish and quantity:  # Verifica que no estén vacíos
             table += f"| {quantity}        | {dish}  |\n"
     
     return table
@@ -138,7 +137,7 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
     chat_completion = client.chat.completions.create(
         messages=[
             {"role": "system", "content": "You are a helpful assistant for a food ordering service."},
-            {"role": "user", "content": f"Extrae la cantidad y el plato de la siguiente solicitud: '{prompt}', limitate a solo devolver la cantidad y los platos sin ningun caracter adicional."},
+            {"role": "user", "content": f"Extrae la cantidad y el plato de la siguiente solicitud: '{prompt}', limitate a solo devolver la cantidad y el plato sin ningun caracter adicional."},
         ],
         model="llama3-8b-8192",  # Cambia esto según el modelo que estés usando
         temperature=0.5,

@@ -82,13 +82,11 @@ def validate_order(prompt, menu):
         except ValueError:
             return None, None
 
-    return order_details, total_price
-
 # Verificar si el distrito es válido
 def is_valid_district(district, districts):
     return district.lower() in [d.lower() for d in districts]
 
-# Inicializar la conversación si no existe en la sesión
+# Inicializar la conversación y las variables de estado
 if "messages" not in st.session_state:
     st.session_state["messages"] = deepcopy(initial_state)
     st.session_state["order"] = None

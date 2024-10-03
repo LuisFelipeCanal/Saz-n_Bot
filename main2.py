@@ -116,6 +116,16 @@ for message in st.session_state.messages:
         with st.chat_message(message["role"], avatar="👤"):
             st.markdown(message["content"])
 
+def format_order_table(order_details):
+    # Crear los encabezados en formato de tabla Markdown
+    table = "| Cantidad | Plato |\n"
+    table += "|----------|-------|\n"
+    
+    # Añadir los detalles del pedido
+    for dish, quantity in order_details.items():
+        table += f"| {quantity}        | {dish}  |\n"
+    
+    return table
 # Entrada del usuario para el pedido
 if prompt := st.chat_input("¿Qué te gustaría pedir?"):
     with st.chat_message("user", avatar="👤"):
@@ -147,8 +157,10 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
         st.session_state["total_price"] = total_price
 
         # Mostrar resumen del pedido
-        order_summary = "\n".join([f"{qty} {dish}" for dish, qty in order_details.items()])
-        response_text = f"Tu pedido ha sido registrado:\n\n{order_summary}.\n\n¿Está correcto? (Sí o No)"
+        order_summary = ""
+        for dish, quantity in order_details.items():
+            order_summary += f"• {quantity}x {dish}\n"
+        response_text = f"Tu pedido ha sido registrado:\n\n{format_order_table(order_details)}.\n\n¿Está correcto? (Sí o No)"
     else:
         # Si el plato no existe, mostrar el menú de nuevo
         response_text = f"Uno o más platos no están disponibles. Aquí está el menú otra vez:\n\n{format_menu(menu)}"

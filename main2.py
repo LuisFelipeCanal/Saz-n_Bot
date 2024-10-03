@@ -66,14 +66,13 @@ def validate_order(prompt, menu):
 
     prompt = prompt.lower()  # Normalizar el prompt a minúsculas
     matches = re.findall(pattern, prompt)
-
+    st.markdown(matches)
     for quantity_str, _, dish_name in matches:
         try:
             quantity = int(quantity_str.strip())
             dish_name = dish_name.strip()
             # Normalizar el nombre del plato
             normalized_dish_name = dish_name.lower()
-            st.markdown(normalized_dish_name)
             # Comparar con el menú
             if normalized_dish_name in menu['Plato'].str.lower().values:
                 price = menu.loc[menu['Plato'].str.lower() == normalized_dish_name, 'Precio'].values[0]

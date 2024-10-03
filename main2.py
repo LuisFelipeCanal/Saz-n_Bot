@@ -161,7 +161,7 @@ if prompt := st.chat_input("¿Qué te gustaría pedir?"):
         order_summary = ""
         for dish, quantity in order_details.items():
             order_summary += f"• {quantity}x {dish}\n"
-        response_text = f"Tu pedido ha sido registrado:\n\n{create_order_dataframe(order_details)}.\n\n¿Está correcto? (Sí o No)"
+        response_text = f"Tu pedido ha sido registrado:\n\n{st.table(create_order_dataframe(order_details))}.\n\n¿Está correcto? (Sí o No)"
     else:
         # Si el plato no existe, mostrar el menú de nuevo
         response_text = f"Uno o más platos no están disponibles. Aquí está el menú otra vez:\n\n{format_menu(menu)}"

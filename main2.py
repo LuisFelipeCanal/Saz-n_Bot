@@ -121,9 +121,10 @@ def format_order_table(order_details):
     table = "| Cantidad | Plato |\n"
     table += "|----------|-------|\n"
     
-    # Añadir los detalles del pedido
+    # Añadir los detalles del pedido solo si hay datos válidos
     for dish, quantity in order_details.items():
-        table += f"| {quantity}        | {dish}  |\n"
+        if dish and quantity:  # Verifica que no estén vacíos
+            table += f"| {quantity}        | {dish}  |\n"
     
     return table
 

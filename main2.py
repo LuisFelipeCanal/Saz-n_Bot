@@ -64,7 +64,7 @@ def validate_order(prompt, menu):
     total_price = 0
     pattern = r'(\d+)\s*(?:platos|plato)?\s*([a-zA-Z\s]+)'   # Regex actualizado
 
-    prompt = prompt.lower()  # Normalizar el prompt a minúsculas
+    prompt = prompt.lower().strip()   # Normalizar el prompt a minúsculas
     matches = re.findall(pattern, prompt)
     st.markdown(matches)
 

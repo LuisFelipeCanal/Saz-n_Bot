@@ -92,6 +92,9 @@ if "messages" not in st.session_state:
     st.session_state["total_price"] = 0
     st.session_state["current_step"] = "order"
 
+if "current_step" not in st.session_state:
+    st.session_state["current_step"] = "start"
+
 # Botón para limpiar la conversación
 clear_button = st.button("Limpiar Conversación", key="clear")
 if clear_button:

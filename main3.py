@@ -9,6 +9,16 @@ import re
 # Inicializar el cliente de Groq con la clave API
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
+# Configuración inicial de la página
+st.set_page_config(page_title="SazónBot", page_icon=":pot_of_food:")
+st.title("🍲 SazónBot")
+
+# Mensaje de bienvenida
+intro = """¡Bienvenido a Sazón Bot, el lugar donde todos tus antojos de almuerzo se hacen realidad!
+Comienza a chatear con Sazón Bot y descubre qué puedes pedir, cuánto cuesta y cómo realizar tu pago. ¡Estamos aquí para ayudarte a disfrutar del mejor almuerzo!"""
+st.markdown(intro)
+
+
 # Cargar el menú desde un archivo CSV
 def load_menu(file_path):
     """Cargar el menú desde un archivo CSV con columnas Plato, Descripción y Precio."""
@@ -20,6 +30,17 @@ def load_distritos(file_path):
     """Cargar los distritos de reparto desde un archivo CSV."""
     distritos = pd.read_csv(file_path)
     return distritos
+
+def format_menu(menu):
+    if menu.empty:
+        return "No hay platos disponibles."
+
+    formatted_menu = []
+    for idx, row in menu.iterrows():
+        formatted_menu.append(
+            f"**{row['Plato']}**\n{row['Descripción']}\n**Precio:** S/{row['Precio']}"
+        )
+    return "\n\n".join(formatted_menu)
 
 # Mostrar el menú con descripciones
 def display_menu(menu):
@@ -37,7 +58,10 @@ def display_distritos(distritos):
         distritos_text += f"{row['Distrito']}\n"
     return distritos_text
 
-# Definir el prompt del sistema para el bot de Sazón
+# Cargar el menú y distritos
+menu = load_menu("carta.csv")
+districts = load_districts("distritos.csv")
+
 def get_system_prompt(menu, distritos):
     """Definir el prompt del sistema para el bot de Sazón incluyendo el menú y distritos."""
     system_prompt = f"""
@@ -53,36 +77,21 @@ def get_system_prompt(menu, distritos):
     """
     return system_prompt.replace("\n", " ")
 
-# Generar la respuesta usando el modelo de Groq con un límite de tokens
-def generate_response(prompt, temperature=0, max_tokens=150):
+
+def generate_response(prompt, temperature=0,max_tokens=150):
     """Enviar el prompt a Groq y devolver la respuesta con un límite de tokens."""
     st.session_state["messages"].append({"role": "user", "content": prompt})
 
-    response = client.chat.completions.create(
+    completion = client.chat.completions.create(
         model="llama3-8b-8192",
         messages=st.session_state["messages"],
         temperature=temperature,
-        max_tokens=max_tokens  # Limitar el número de tokens en la respuesta
+        max_tokens=max_tokens,
+        stream=False,
     )
+    response = completion.choices[0].message.content
     st.session_state["messages"].append({"role": "assistant", "content": response})
     return response
-
-# Registrar el pedido con timestamp y monto
-def register_order(order, total_price):
-    """Registrar el pedido con timestamp y monto en un archivo."""
-    with open("orders.csv", mode="a", newline="") as file:
-        writer = csv.writer(file)
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        writer.writerow([timestamp, order, total_price])
-
-# Generar resumen del pedido en formato JSON
-def generate_order_summary(order):
-    """Generar resumen del pedido en formato JSON."""
-    return {
-        "order": order,
-        "total_price": sum([item['price'] for item in order]),
-        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    }
 
 # Ajustar el tono del bot
 def adjust_tone(tone="friendly"):
@@ -94,41 +103,40 @@ def adjust_tone(tone="friendly"):
         st.session_state["tone"] = "friendly"
         return "Eres un asistente amigable y relajado."
 
-# Iniciar el estado inicial del bot
-def initialize_state(menu, distritos):
-    """Iniciar el estado inicial con el prompt del sistema y el primer mensaje del bot."""
-    if "messages" not in st.session_state:
-        st.session_state["messages"] = [
-            {"role": "system", "content": get_system_prompt(menu, distritos)},
-            {
-                "role": "assistant",
-                "content": "👋 ¡Bienvenido a Sazón! ¿Qué te gustaría pedir hoy?",
-            },
-        ]
-# Flujo principal de la aplicación
-def main():
-    # Cargar el menú y los distritos
-    menu = load_menu("carta.csv")
-    distritos = load_distritos("distritos.csv")
-    
-    # Iniciar el estado
-    initialize_state(menu, distritos)
-    
-    # Mostrar el historial de mensajes
-    for message in st.session_state["messages"]:
-        if message["role"] == "assistant":
-            st.markdown(f"**Sazón Bot:** {message['content']}")
-        else:
-            st.markdown(f"**Tú:** {message['content']}")
+        
+initial_state = [
+    {"role": "system", "content": get_system_prompt()},
+    {
+        "role": "assistant",
+        "content": f"👨‍🍳¿Qué te puedo ofrecer?\n\nEste es el menú del día:\n\n{format_menu(menu)}",
+    },
+]
 
-    # Recibir el mensaje del usuario
-    user_input = st.text_input("Escribe tu pedido aquí:", "")
-    
-    # Si el usuario envía un mensaje, generar la respuesta
-    if user_input:
-        response = generate_response(user_input)
-        st.markdown(f"**Sazón Bot:** {response}")
 
-# Ejecutar la aplicación
-if __name__ == "__main__":
-    main()
+if "messages" not in st.session_state:
+    st.session_state["messages"] = deepcopy(initial_state)
+
+# Let user clear the current conversation
+clear_button = st.button("Clear Conversation", key="clear")
+if clear_button:
+    st.session_state["messages"] = deepcopy(initial_state)
+
+# Display chat messages from history on app rerun
+for message in st.session_state.messages:
+    if message["role"] == "system":
+        continue
+    elif message["role"] == "assistant":
+        with st.chat_message(message["role"], avatar="🍲"):
+            st.markdown(message["content"])
+    else:
+        with st.chat_message(message["role"], avatar="👤"):
+            st.markdown(message["content"])
+
+if prompt := st.chat_input():
+    with st.chat_message("user", avatar="👤"):
+        st.markdown(prompt)
+
+    output = generate_response(prompt)
+    with st.chat_message("assistant", avatar="🍲"):
+        st.markdown(output)
+

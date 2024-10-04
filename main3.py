@@ -84,8 +84,8 @@ def get_system_prompt(menu, distritos):
     | **Plato** | **Cantidad** | **Precio Total** |\n
     |-----------|--------------|------------------|\n
     |           |              |                  |\n
-    Confirma el monto total y pregunta por el método de pago. Registra todos los pedidos con un 
-    timestamp y su monto en soles después de la confirmación. Si es necesario, ofrece información sobre los productos o distritos disponibles. 
+    El monto total del pedido no acepta descuentos ni rectificaciones del precio. Confirma el monto total y pregunta por el método de pago. 
+    Registra todos los pedidos con un timestamp y su monto en soles después de la confirmación. Si es necesario, ofrece información sobre los productos o distritos disponibles. 
     Recuerda verificar que el pedido sea correcto antes de registrarlo.
     """
     return system_prompt.replace("\n", " ")

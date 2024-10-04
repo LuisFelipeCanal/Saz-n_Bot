@@ -38,7 +38,7 @@ def format_menu(menu):
     formatted_menu = []
     for idx, row in menu.iterrows():
         formatted_menu.append(
-            f"**{row['Plato']}**\n{row['Descripción']}\n**Precio:** S/{row['Precio']}"
+            f"**{row['Plato']}**\n\n{row['Descripción']}\n\n**Precio:** S/{row['Precio']}"
         )
     return "\n\n".join(formatted_menu)
 
@@ -55,7 +55,7 @@ def display_distritos(distritos):
     """Mostrar los distritos de reparto disponibles."""
     distritos_text = "Los distritos de reparto son:\n"
     for index, row in distritos.iterrows():
-        distritos_text += f"{row['Distrito']}\n"
+        distritos_text += f"**{row['Distrito']}**\n"
     return distritos_text
 
 # Cargar el menú y distritos
@@ -116,8 +116,8 @@ initial_state = [
 if "messages" not in st.session_state:
     st.session_state["messages"] = deepcopy(initial_state)
 
-# Let user clear the current conversation
-clear_button = st.button("Clear Conversation", key="clear")
+# eliminar conversación
+clear_button = st.button("Eliminar conversación", key="clear")
 if clear_button:
     st.session_state["messages"] = deepcopy(initial_state)
 
@@ -126,7 +126,7 @@ for message in st.session_state.messages:
     if message["role"] == "system":
         continue
     elif message["role"] == "assistant":
-        with st.chat_message(message["role"], avatar="🍲"):
+        with st.chat_message(message["role"], avatar="👨‍🍳"):
             st.markdown(message["content"])
     else:
         with st.chat_message(message["role"], avatar="👤"):
@@ -137,6 +137,6 @@ if prompt := st.chat_input():
         st.markdown(prompt)
 
     output = generate_response(prompt)
-    with st.chat_message("assistant", avatar="🍲"):
+    with st.chat_message("assistant", avatar="👨‍🍳"):
         st.markdown(output)
 

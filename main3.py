@@ -60,7 +60,7 @@ def display_distritos(distritos):
 
 # Cargar el menú y distritos
 menu = load_menu("carta.csv")
-distritos = load_districts("distritos.csv")
+distritos = load_distritos("distritos.csv")
 
 def get_system_prompt(menu, distritos):
     """Definir el prompt del sistema para el bot de Sazón incluyendo el menú y distritos."""

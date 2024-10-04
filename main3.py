@@ -91,7 +91,7 @@ def get_system_prompt(menu, distritos):
     return system_prompt.replace("\n", " ")
 
 
-def generate_response(prompt, temperature=0,max_tokens=150):
+def generate_response(prompt, temperature=0,max_tokens=1000):
     """Enviar el prompt a Groq y devolver la respuesta con un límite de tokens."""
     st.session_state["messages"].append({"role": "user", "content": prompt})
 

@@ -35,12 +35,14 @@ def format_menu(menu):
     if menu.empty:
         return "No hay platos disponibles."
 
-    formatted_menu = []
-    for idx, row in menu.iterrows():
-        formatted_menu.append(
-            f"**{row['Plato']}**\n\n{row['Descripción']}\n\n**Precio:** S/{row['Precio']}"
-        )
-    return "\n\n".join(formatted_menu)
+    else:
+        st.table(menu[['Plato', 'Descripción', 'Precio']].style.format({'Precio': 'S/{:.2f}'}))
+    #formatted_menu = []
+    #for idx, row in menu.iterrows():
+     #   formatted_menu.append(
+      #      f"**{row['Plato']}**\n\n{row['Descripción']}\n\n**Precio:** S/{row['Precio']}"
+       # )
+    #return "\n\n".join(formatted_menu)
 
 # Mostrar el menú con descripciones
 def display_menu(menu):

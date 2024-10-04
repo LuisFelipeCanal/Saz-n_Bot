@@ -74,6 +74,8 @@ distritos = load_distritos("distritos.csv")
 
 def display_confirmed_order(order_details):
     """Genera una tabla en formato Markdown para el pedido confirmado."""
+    hora_actual = datetime.now().strftime("%H:%M:%S")
+    table = f"Pedido confirmado a las {hora_actual}:\n\n"
     table = "| **Plato** | **Cantidad** | **Precio Total** |\n"
     table += "|-----------|--------------|------------------|\n"
     for item in order_details:

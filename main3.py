@@ -95,7 +95,7 @@ def get_system_prompt(menu, distritos):
     |-----------|--------------|------------------|\n
     |           |              |                  |\n
     | **Total** |              | **S/ 0.00**      |\n
-    El monto total del pedido no acepta descuentos ni rectificaciones del precio. Confirma el monto total y pregunta por el método de pago. 
+    El monto total del pedido no acepta descuentos ni rectificaciones del precio. Confirma el monto total y pregunta por el método de pago y confirmalo. 
 
     Una vez que el cliente confirme el pedido, registra la hora actual de Perú como el timestamp de la confirmación. 
     El pedido confirmado será:\n

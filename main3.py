@@ -107,7 +107,7 @@ def initialize_state(menu, distritos):
 # Flujo principal de la aplicación
 def main():
     # Cargar el menú y los distritos
-    menu = load_menu("menu.csv")
+    menu = load_menu("carta.csv")
     distritos = load_distritos("distritos.csv")
     
     # Iniciar el estado

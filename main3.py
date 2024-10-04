@@ -80,6 +80,7 @@ def display_confirmed_order(order_details):
         table += f"| {item['Plato']} | {item['Cantidad']} | S/{item['Precio Total']:.2f} |\n"
     table += "| **Total** |              | **S/ {:.2f}**      |\n".format(sum(item['Precio Total'] for item in order_details))
     return table
+
 def get_system_prompt(menu, distritos):
     """Definir el prompt del sistema para el bot de Sazón incluyendo el menú y distritos."""
     system_prompt = f"""
@@ -88,14 +89,18 @@ def get_system_prompt(menu, distritos):
     También repartimos en los siguientes distritos: {display_distritos(distritos)}.\n
     Primero, saluda al cliente y ofrécele el menú. Luego, pregunta si quiere recoger su pedido en el local o si prefiere que lo enviemos a domicilio. 
     Asegúrate de usar solo español peruano en tus respuestas, evitando cualquier término como preferís debe ser prefiere. 
-    Si el pedido es para entrega, asegúrate de que el distrito esté disponible y confirma con el cliente el distrito de entrega. 
+    Verifica que el cliente haya ingresado el método de pedido antes de continuar. Si el pedido es para entrega, 
+    asegúrate de que el distrito esté disponible y confirma con el cliente el distrito de entrega. 
     Si el pedido es para recoger, pregunta si desea recoger en el local. Después, resume 
     el pedido en la siguiente tabla:\n
     | **Plato** | **Cantidad** | **Precio Total** |\n
     |-----------|--------------|------------------|\n
     |           |              |                  |\n
     | **Total** |              | **S/ 0.00**      |\n
-    El monto total del pedido no acepta descuentos ni rectificaciones del precio. Confirma el monto total y pregunta por el método de pago y confirmalo. 
+    El monto total del pedido no acepta descuentos ni rectificaciones del precio. 
+
+    Pregunta al cliente: "¿Estás de acuerdo con el pedido?" y espera su respuesta. 
+    Una vez que confirme, pregunta: "¿Cuál es tu método de pago? ¿Deseas pagar con tarjeta de crédito, efectivo o algún otro método?". 
 
     Una vez que el cliente confirme el pedido, registra la hora actual de Perú como el timestamp de la confirmación. 
     El pedido confirmado será:\n
@@ -103,7 +108,6 @@ def get_system_prompt(menu, distritos):
     Recuerda verificar que el pedido sea correcto antes de registrarlo.
     """
     return system_prompt.replace("\n", " ")
-
 
 def generate_response(prompt, temperature=0,max_tokens=1000):
     """Enviar el prompt a Groq y devolver la respuesta con un límite de tokens."""

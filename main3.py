@@ -59,7 +59,7 @@ def generate_response(prompt, temperature=0, max_tokens=150):
     st.session_state["messages"].append({"role": "user", "content": prompt})
 
     response = client.chat.completions.create(
-        prompt=prompt,
+        messages=st.session_state["messages"],
         temperature=temperature,
         max_tokens=max_tokens  # Limitar el número de tokens en la respuesta
     )

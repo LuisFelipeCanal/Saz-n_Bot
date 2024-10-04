@@ -44,7 +44,7 @@ def format_menu(menu):
         for idx, row in menu.iterrows():
             table += f"| {row['Plato']} | {row['Descripción']} | S/{row['Precio']:.2f} |\n"
         
-        st.markdown(table)
+        return table
     #formatted_menu = []
     #for idx, row in menu.iterrows():
      #   formatted_menu.append(

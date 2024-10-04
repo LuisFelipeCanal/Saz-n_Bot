@@ -85,6 +85,7 @@ def display_confirmed_order(order_details):
 def get_system_prompt(menu, distritos):
     """Definir el prompt del sistema para el bot de Sazón incluyendo el menú y distritos."""
     hora_actual = datetime.now().strftime("%H:%M:%S")
+    ejemplohora=f"{hora_actual}"
     system_prompt = f"""
     Eres el bot de pedidos de Sazón. Ayudas a los clientes a hacer sus pedidos y siempre 
     eres bien amable. Aquí tienes el menú para que se lo muestres a los clientes:\n{display_menu(menu)}\n
@@ -104,7 +105,7 @@ def get_system_prompt(menu, distritos):
     Pregunta al cliente: "¿Estás de acuerdo con el pedido?" y espera su respuesta. 
     Una vez que confirme, pregunta: "¿Cuál es tu método de pago? ¿Deseas pagar con tarjeta de crédito, efectivo o algún otro método?". 
 
-    Una vez que el cliente confirme el pedido, registra la hora actual de Perú como el timestamp {hora_actual} de la confirmación. 
+    Una vez que el cliente confirme el pedido, registra la hora actual de Perú como el timestamp {ejemplohora} de la confirmación. 
     El pedido confirmado será:\n
     {display_confirmed_order([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0}])}\n
     Recuerda verificar que el pedido sea correcto antes de registrarlo.

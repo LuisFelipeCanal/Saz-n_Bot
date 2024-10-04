@@ -58,7 +58,7 @@ def generate_response(prompt, temperature=0, max_tokens=150):
     """Enviar el prompt a Groq y devolver la respuesta con un límite de tokens."""
     st.session_state["messages"].append({"role": "user", "content": prompt})
 
-    response = client.completions.create(
+    response = client.chat.completions.create(
         prompt=prompt,
         temperature=temperature,
         max_tokens=max_tokens  # Limitar el número de tokens en la respuesta

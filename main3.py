@@ -105,7 +105,7 @@ def adjust_tone(tone="friendly"):
 
         
 initial_state = [
-    {"role": "system", "content": get_system_prompt()},
+    {"role": "system", "content": get_system_prompt(menu,distritos)},
     {
         "role": "assistant",
         "content": f"👨‍🍳¿Qué te puedo ofrecer?\n\nEste es el menú del día:\n\n{format_menu(menu)}",

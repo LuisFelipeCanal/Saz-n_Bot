@@ -88,14 +88,10 @@ def display_confirmed_order(order_details):
     """Genera una tabla en formato Markdown para el pedido confirmado."""
     table = "| **Plato** | **Cantidad** | **Precio Total** |\n"
     table += "|-----------|--------------|------------------|\n"
-    order_ter = []
     for item in order_details:
         table += f"| {item['Plato']} | {item['Cantidad']} | S/{item['Precio Total']:.2f} |\n"
         order_ter.append({'Plato': item['Plato'], 'Cantidad': item['Cantidad'], 'Precio Total': item['Precio Total']})
     table += "| **Total** |              | **S/ {:.2f}**      |\n".format(sum(item['Precio Total'] for item in order_details))
-    # Crear el JSON con el pedido para registrar
-    logging.info(f"Detalles del pedido antes de generar JSON: {order_details}")
-    order_json = get_order_json(order_ter)
     return table
 
 ##Pendiente
@@ -104,7 +100,6 @@ def display_confirmed_order(order_details):
 def get_system_prompt(menu, distritos):
     """Definir el prompt del sistema para el bot de Sazón incluyendo el menú y distritos."""
     lima_tz = pytz.timezone('America/Lima') # Define la zona horaria de Lima
-    order_details = [{'Plato': 'Arroz con Pollo', 'Cantidad': 2, 'Precio Total': 24.00}]
     hora_lima = datetime.now(lima_tz).strftime("%Y-%m-%d %H:%M:%S") # Obtiene la hora actual en Lima
     system_prompt = f"""
     Eres el bot de pedidos de Sazón. Ayudas a los clientes a hacer sus pedidos y siempre 
@@ -129,13 +124,24 @@ def get_system_prompt(menu, distritos):
     El pedido confirmado será:\n
     {display_confirmed_order([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0}])}\n
     Recuerda verificar que el pedido sea correcto antes de registrarlo.
-
-    # Después de la confirmación del pedido, llama a la función para registrar el pedido en formato JSON
-    order_details son datos ficticios, aquí deberías usar los datos reales del pedido y pasar como parametro  la siguiente funcion
-    {get_order_json(order_details)}  # Llama a la función para registrar el pedido en formato JSON
     """
     return system_prompt.replace("\n", " ")
+def extract_order_json(response):
+    """Extrae el pedido confirmado en formato JSON desde la respuesta del bot."""
+    prompt = f"Extrae la información del pedido confirmado en formato JSON de la siguiente respuesta: '{response}'. Solo devuelve el JSON sin ningún carácter adicional."
+    
+    extraction = client.chat.completions.create(
+        messages=[{"role": "system", "content": "You are a helpful assistant for a food ordering service."},
+                  {"role": "user", "content": prompt}],
+        model="llama3-8b-8192",
+        temperature=0.5,
+        max_tokens=150,
+        top_p=1,
+        stop=None,
+        stream=False,
+    )
 
+    return extraction.choices[0].message.content
 def generate_response(prompt, temperature=0,max_tokens=1000):
     """Enviar el prompt a Groq y devolver la respuesta con un límite de tokens."""
     st.session_state["messages"].append({"role": "user", "content": prompt})
@@ -149,6 +155,11 @@ def generate_response(prompt, temperature=0,max_tokens=1000):
     )
     response = completion.choices[0].message.content
     st.session_state["messages"].append({"role": "assistant", "content": response})
+    # Extraemos el JSON del pedido confirmado
+    order_json = extract_order_json(response)
+
+    # Guardar el JSON en el log
+    logging.info(f"Pedido confirmado en formato JSON: {order_json}")
     return response
 
 # Ajustar el tono del bot

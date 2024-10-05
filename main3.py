@@ -199,7 +199,7 @@ if prompt := st.chat_input():
     with st.chat_message("assistant", avatar="👨‍🍳"):
         st.markdown(output)
         
-    if "confirmar pedido" in prompt.lower():
+    if "si" in prompt.lower():
     # Aquí, asegúrate de que order_summary tenga los detalles del pedido
         order_summary = [...]  # Esto debe contener la lista de pedidos realizados
 

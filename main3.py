@@ -198,7 +198,4 @@ if prompt := st.chat_input():
     with st.chat_message("assistant", avatar="👨‍🍳"):
         st.markdown(output)
 
-    # Mostrar la tabla al usuario
-        st.chat_message("assistant").markdown(f"Tu pedido ha sido confirmado:\n{order_table}")
-
 

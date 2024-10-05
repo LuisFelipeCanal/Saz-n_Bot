@@ -7,6 +7,7 @@ import csv
 import re
 import pytz
 import json
+import logging
 
 # Inicializar el cliente de Groq con la clave API
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
@@ -76,7 +77,8 @@ def get_order_json(order_details):
         "total": sum(item['Precio Total'] for item in order_details)
     } 
     return json.dumps(order_summary, indent=4)
-
+# Configura el logger
+logging.basicConfig(level=logging.INFO)
 
 def display_confirmed_order(order_details):
     """Genera una tabla en formato Markdown para el pedido confirmado."""
@@ -86,7 +88,7 @@ def display_confirmed_order(order_details):
         table += f"| {item['Plato']} | {item['Cantidad']} | S/{item['Precio Total']:.2f} |\n"
     table += "| **Total** |              | **S/ {:.2f}**      |\n".format(sum(item['Precio Total'] for item in order_details))
     order_json = get_order_json(order_details)
-    print(order_json)
+    logging.info(f"Pedido confirmado en formato JSON: {order_json}")
     return table
 
 ##Pendiente

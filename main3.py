@@ -124,6 +124,7 @@ def get_system_prompt(menu, distritos):
     El pedido confirmado será:\n
     {display_confirmed_order([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0}])}\n
     Recuerda verificar que el pedido sea correcto antes de registrarlo.
+    Una vez que el pedido a sido confirmado registralo {get_order_json([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0}])}
     """
     return system_prompt.replace("\n", " ")
 
@@ -188,26 +189,4 @@ if prompt := st.chat_input():
     output = generate_response(prompt)
     with st.chat_message("assistant", avatar="👨‍🍳"):
         st.markdown(output)
-    # Lógica para capturar el pedido confirmado
-    if "pedido confirmado" in output.lower():  # Cambia esta condición según tu lógica
-        # Aquí asumiendo que el output incluirá una lista de platos, cantidades y precios
-        # Necesitarás procesar el output para extraer esta información
-        # Ejemplo de cómo podrías estructurar esta parte:
-
-        # Suponiendo que el pedido es algo como: "Tu pedido es: Plato: Arroz con Pollo, Cantidad: 2, Precio Total: S/ 30.00"
-        order_details = []
-        lines = output.splitlines()
-        for line in lines:
-            match = re.search(r'Plato: (.*), Cantidad: (\d+), Precio Total: S/ ([\d.]+)', line)
-            if match:
-                order_details.append({
-                    "Plato": match.group(1),
-                    "Cantidad": int(match.group(2)),
-                    "Precio Total": float(match.group(3))
-                })
-        
-        if order_details:
-            # Generar el JSON y mostrarlo en el chat
-            order_json = get_order_json(order_details)
-            st.chat_message("assistant", avatar="👨‍🍳").markdown(order_json)
 

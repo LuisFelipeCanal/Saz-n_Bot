@@ -6,6 +6,7 @@ from groq import Groq
 import csv
 import re
 import pytz
+import json
 
 # Inicializar el cliente de Groq con la clave API
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])

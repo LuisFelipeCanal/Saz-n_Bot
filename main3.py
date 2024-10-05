@@ -124,7 +124,7 @@ def get_system_prompt(menu, distritos):
     El pedido confirmado será:\n
     {display_confirmed_order([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0}])}\n
     Recuerda verificar que el pedido sea correcto antes de registrarlo.
-    Mostrar al final de de que se haya confirmado, registrar el pedido confirmado y imprimir el log {get_order_json([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0, 'Hora': hora_lima, 'Distrito':'' }])}
+    Log del pedido confirmado: {get_order_json([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0, 'Hora': hora_lima, 'Distrito':'' }])}
     """
     return system_prompt.replace("\n", " ")
 

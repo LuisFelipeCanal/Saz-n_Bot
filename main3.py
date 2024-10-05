@@ -197,16 +197,6 @@ if prompt := st.chat_input():
     output = generate_response(prompt)
     with st.chat_message("assistant", avatar="👨‍🍳"):
         st.markdown(output)
-        
-    if "si" in prompt.lower():
-    # Aquí, asegúrate de que order_summary tenga los detalles del pedido
-        order_summary = [...]  # Esto debe contener la lista de pedidos realizados
-
-    # Crear el diccionario del pedido
-        order_details = [{"Plato": dish.strip(), "Cantidad": quantity, "Precio Total": dish_price * quantity} for dish, quantity, dish_price in order_summary]
-
-    # Generar la tabla de resumen del pedido
-        order_table = display_confirmed_order(order_details)
 
     # Mostrar la tabla al usuario
         st.chat_message("assistant").markdown(f"Tu pedido ha sido confirmado:\n{order_table}")

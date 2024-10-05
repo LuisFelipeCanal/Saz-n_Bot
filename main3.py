@@ -73,6 +73,14 @@ def display_distritos(distritos):
 menu = load_menu("carta.csv")
 distritos = load_distritos("distritos.csv")
 
+def get_order_json(order_details): 
+    """Genera el pedido confirmado en formato JSON.""" 
+    order_summary = {
+        "pedido": order_details,
+        "total": sum(item['Precio Total'] for item in order_details)
+    } 
+    return json.dumps(order_summary, indent=4)
+    
 def display_confirmed_order(order_details):
     """Genera una tabla en formato Markdown para el pedido confirmado."""
     table = "| **Plato** | **Cantidad** | **Precio Total** |\n"
@@ -80,14 +88,11 @@ def display_confirmed_order(order_details):
     for item in order_details:
         table += f"| {item['Plato']} | {item['Cantidad']} | S/{item['Precio Total']:.2f} |\n"
     table += "| **Total** |              | **S/ {:.2f}**      |\n".format(sum(item['Precio Total'] for item in order_details))
+    print(get_order_json(oder_details))
     return table
 
 ##Pendiente
-def get_order_json(order_details): 
-    """Genera el pedido confirmado en formato JSON.""" 
-    for item in order_details:
-    order_summary = { "pedido": order_details, "total": {item['Precio Total']:.2f} } 
-    return json.dumps(order_summary, indent=4)
+
 
 def get_system_prompt(menu, distritos):
     """Definir el prompt del sistema para el bot de Sazón incluyendo el menú y distritos."""

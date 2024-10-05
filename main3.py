@@ -104,7 +104,7 @@ def display_confirmed_order(order_details):
 def get_system_prompt(menu, distritos):
     """Definir el prompt del sistema para el bot de Sazón incluyendo el menú y distritos."""
     lima_tz = pytz.timezone('America/Lima') # Define la zona horaria de Lima
-
+    order_details = [{'Plato': 'Arroz con Pollo', 'Cantidad': 2, 'Precio Total': 24.00}]
     hora_lima = datetime.now(lima_tz).strftime("%Y-%m-%d %H:%M:%S") # Obtiene la hora actual en Lima
     system_prompt = f"""
     Eres el bot de pedidos de Sazón. Ayudas a los clientes a hacer sus pedidos y siempre 
@@ -131,7 +131,7 @@ def get_system_prompt(menu, distritos):
     Recuerda verificar que el pedido sea correcto antes de registrarlo.
 
     # Después de la confirmación del pedido, llama a la función para registrar el pedido en formato JSON
-    order_details = [{'Plato': 'Arroz con Pollo', 'Cantidad': 2, 'Precio Total': 24.00}]  # Aquí deberías usar los datos reales del pedido
+    order_details son datos ficticios, aquí deberías usar los datos reales del pedido y pasar como parametro  la siguiente funcion
     order_json = get_order_json(order_details)  # Llama a la función para registrar el pedido en formato JSON
     logging.info(f"Pedido registrado: {order_json}")  # Registra el pedido
     """

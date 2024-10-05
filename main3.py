@@ -94,6 +94,7 @@ def display_confirmed_order(order_details):
         order_ter.append({'Plato': item['Plato'], 'Cantidad': item['Cantidad'], 'Precio Total': item['Precio Total']})
     table += "| **Total** |              | **S/ {:.2f}**      |\n".format(sum(item['Precio Total'] for item in order_details))
     # Crear el JSON con el pedido para registrar
+    logging.info(f"Detalles del pedido antes de generar JSON: {order_details}")
     order_json = get_order_json(order_ter)
     return table
 

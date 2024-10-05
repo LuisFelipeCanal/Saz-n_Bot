@@ -88,11 +88,13 @@ def display_confirmed_order(order_details):
     """Genera una tabla en formato Markdown para el pedido confirmado."""
     table = "| **Plato** | **Cantidad** | **Precio Total** |\n"
     table += "|-----------|--------------|------------------|\n"
+    order_ter = []
     for item in order_details:
         table += f"| {item['Plato']} | {item['Cantidad']} | S/{item['Precio Total']:.2f} |\n"
-        order_ter=[{'Plato':item['Plato'],'Cantidad':item['Cantidad'],'Precio Total':item['Precio Total']}]
+        order_ter.append({'Plato': item['Plato'], 'Cantidad': item['Cantidad'], 'Precio Total': item['Precio Total']})
     table += "| **Total** |              | **S/ {:.2f}**      |\n".format(sum(item['Precio Total'] for item in order_details))
-    get_order_json(order_ter)
+    # Crear el JSON con el pedido para registrar
+    order_json = get_order_json(order_ter)
     return table
 
 ##Pendiente

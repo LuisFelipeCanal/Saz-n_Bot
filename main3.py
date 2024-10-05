@@ -127,7 +127,7 @@ def get_system_prompt(menu, distritos):
     return system_prompt.replace("\n", " ")
 def extract_order_json(response):
     """Extrae el pedido confirmado en formato JSON desde la respuesta del bot."""
-    prompt = f"Extrae la información del pedido confirmado que se encuentra al final de la siguiente respuesta: '{response}' en formato JSON. Solo devuelve el JSON sin ningún carácter adicional."
+    prompt = f"Extrae la información del pedido confirmado en formato JSON de la siguiente respuesta: '{response}' que se encuentra al final del flujo de pedido. Solo devuelve el JSON sin ningún carácter adicional."
     
     extraction = client.chat.completions.create(
         messages=[{"role": "system", "content": "You are a helpful assistant for a food ordering service."},

@@ -129,6 +129,11 @@ def get_system_prompt(menu, distritos):
     El pedido confirmado será:\n
     {display_confirmed_order([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0}])}\n
     Recuerda verificar que el pedido sea correcto antes de registrarlo.
+
+    # Después de la confirmación del pedido, llama a la función para registrar el pedido en formato JSON
+    order_details = [{'Plato': 'Arroz con Pollo', 'Cantidad': 2, 'Precio Total': 24.00}]  # Aquí deberías usar los datos reales del pedido
+    order_json = get_order_json(order_details)  # Llama a la función para registrar el pedido en formato JSON
+    logging.info(f"Pedido registrado: {order_json}")  # Registra el pedido
     """
     return system_prompt.replace("\n", " ")
 

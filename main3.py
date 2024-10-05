@@ -75,11 +75,11 @@ distritos = load_distritos("distritos.csv")
 
 def get_order_json(order_details): 
     """Genera el pedido confirmado en formato JSON.""" 
-    order_summary = {
-        "pedido": order_details,
-        "total": sum(item['Precio Total'] for item in order_details)
-    } 
-    return json.dumps(order_summary, indent=4)
+    #order_summary = {
+     #   "pedido": order_details,
+      #  "total": sum(item['Precio Total'] for item in order_details)
+    #} 
+    return json.dumps(order_details, indent=3)
     
 def display_confirmed_order(order_details):
     """Genera una tabla en formato Markdown para el pedido confirmado."""

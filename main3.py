@@ -125,7 +125,7 @@ def get_system_prompt(menu, distritos):
     {display_confirmed_order([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0}])}\n
     Recuerda verificar que el pedido sea correcto antes de registrarlo.
     Retorna pedido que es una variable que contiene los platos y cantidades y precio total en un json del pedido confirmado
-    {get_order_json(pedido)}
+    {get_order_json([pedido])}
     """
     return system_prompt.replace("\n", " ")
 

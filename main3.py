@@ -47,12 +47,7 @@ def format_menu(menu):
             table += f"| {row['Plato']} | {row['Descripción']} | S/{row['Precio']:.2f} |\n"
         
         return table
-    #formatted_menu = []
-    #for idx, row in menu.iterrows():
-     #   formatted_menu.append(
-      #      f"**{row['Plato']}**\n\n{row['Descripción']}\n\n**Precio:** S/{row['Precio']}"
-       # )
-    #return "\n\n".join(formatted_menu)
+
 
 # Mostrar el menú con descripciones
 def display_menu(menu):
@@ -85,13 +80,13 @@ def get_order_json(order_details):
 
 def display_confirmed_order(order_details):
     """Genera una tabla en formato Markdown para el pedido confirmado."""
-    order_json = get_order_json(order_details)
-    st.json(order_json)
     table = "| **Plato** | **Cantidad** | **Precio Total** |\n"
     table += "|-----------|--------------|------------------|\n"
     for item in order_details:
         table += f"| {item['Plato']} | {item['Cantidad']} | S/{item['Precio Total']:.2f} |\n"
     table += "| **Total** |              | **S/ {:.2f}**      |\n".format(sum(item['Precio Total'] for item in order_details))
+    order_json = get_order_json(order_details)
+    print(order_json)
     return table
 
 ##Pendiente

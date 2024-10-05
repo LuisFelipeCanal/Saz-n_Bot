@@ -90,8 +90,9 @@ def display_confirmed_order(order_details):
     table += "|-----------|--------------|------------------|\n"
     for item in order_details:
         table += f"| {item['Plato']} | {item['Cantidad']} | S/{item['Precio Total']:.2f} |\n"
+        order_ter=[{'Plato':item['Plato'],'Cantidad':item['Cantidad'],'Precio Total':item['Precio Total']}]
     table += "| **Total** |              | **S/ {:.2f}**      |\n".format(sum(item['Precio Total'] for item in order_details))
-    get_order_json([{'Plato':item['Plato'],'Cantidad':item['Cantidad'],'Precio Total':item['Precio Total']}])
+    get_order_json(order_ter)
     return table
 
 ##Pendiente

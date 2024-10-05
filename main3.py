@@ -121,10 +121,17 @@ def get_system_prompt(menu, distritos):
     Una vez que confirme, pregunta: "¿Cuál es tu método de pago? ¿Deseas pagar con tarjeta de crédito, efectivo o algún otro método?". 
 
     Una vez que el cliente confirme el pedido, registra la hora actual de Perú como el timestamp {hora_lima} de la confirmación. 
+    # Captura la información del pedido
+    # Suponiendo que se obtiene el pedido en un formato adecuado
+    order_details = [{'Plato': '', 'Cantidad': 0, 'Precio Total': 0}]  # Inicializa el pedido
+    order_summary = display_confirmed_order(order_details)  # Genera la tabla del pedido confirmado
+    order_json = get_order_json(order_details)  # Genera el JSON del pedido
+
+    Una vez que el cliente confirme el pedido, registra la hora actual de Perú como el timestamp {hora_lima} de la confirmación. 
     El pedido confirmado será:\n
-    {display_confirmed_order([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0}])}\n
+    {order_summary}\n
     Recuerda verificar que el pedido sea correcto antes de registrarlo.
-    Log del pedido confirmado: {get_order_json([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0, 'Hora': hora_lima, 'Distrito':'' }])}
+    Log del pedido confirmado: {order_json}
     """
     return system_prompt.replace("\n", " ")
 

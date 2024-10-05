@@ -78,7 +78,7 @@ def get_order_json(order_details):
     } 
     return json.dumps(order_summary, indent=4)
 # Configura el logger
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def display_confirmed_order(order_details):
     """Genera una tabla en formato Markdown para el pedido confirmado."""

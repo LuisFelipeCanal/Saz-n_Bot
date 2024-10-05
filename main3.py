@@ -132,8 +132,7 @@ def get_system_prompt(menu, distritos):
 
     # Después de la confirmación del pedido, llama a la función para registrar el pedido en formato JSON
     order_details son datos ficticios, aquí deberías usar los datos reales del pedido y pasar como parametro  la siguiente funcion
-    order_json = get_order_json(order_details)  # Llama a la función para registrar el pedido en formato JSON
-    logging.info(f"Pedido registrado: {order_json}")  # Registra el pedido
+    {get_order_json(order_details)}  # Llama a la función para registrar el pedido en formato JSON
     """
     return system_prompt.replace("\n", " ")
 

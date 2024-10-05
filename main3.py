@@ -70,15 +70,19 @@ def display_distritos(distritos):
 menu = load_menu("carta.csv")
 distritos = load_distritos("distritos.csv")
 
+# Configura el logger
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 def get_order_json(order_details): 
     """Genera el pedido confirmado en formato JSON.""" 
     order_summary = {
         "pedido": order_details,
         "total": sum(item['Precio Total'] for item in order_details)
     } 
-    return json.dumps(order_summary, indent=4)
-# Configura el logger
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    order_json = json.dumps(order_summary, indent=4) 
+    logging.info(f"Pedido confirmado en formato JSON: {order_json}")
+    return order_json
+
 
 def display_confirmed_order(order_details):
     """Genera una tabla en formato Markdown para el pedido confirmado."""
@@ -87,8 +91,6 @@ def display_confirmed_order(order_details):
     for item in order_details:
         table += f"| {item['Plato']} | {item['Cantidad']} | S/{item['Precio Total']:.2f} |\n"
     table += "| **Total** |              | **S/ {:.2f}**      |\n".format(sum(item['Precio Total'] for item in order_details))
-    order_json = get_order_json(order_details)
-    logging.info(f"Pedido confirmado en formato JSON: {order_json}")
     return table
 
 ##Pendiente
@@ -122,6 +124,7 @@ def get_system_prompt(menu, distritos):
     El pedido confirmado será:\n
     {display_confirmed_order([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0}])}\n
     Recuerda verificar que el pedido sea correcto antes de registrarlo.
+    cuando ya este registrado llamar a la siguiente funcion y imprimir el log {get_order_json([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0, 'Hora': hora_lima, 'Lugar':'' }])}
     """
     return system_prompt.replace("\n", " ")
 

@@ -81,15 +81,17 @@ def get_order_json(order_details):
         "total": sum(item['Precio Total'] for item in order_details)
     } 
     return json.dumps(order_summary, indent=4)
-    
+
+
 def display_confirmed_order(order_details):
     """Genera una tabla en formato Markdown para el pedido confirmado."""
+    order_json = get_order_json(order_details)
+    st.json(order_json)
     table = "| **Plato** | **Cantidad** | **Precio Total** |\n"
     table += "|-----------|--------------|------------------|\n"
     for item in order_details:
         table += f"| {item['Plato']} | {item['Cantidad']} | S/{item['Precio Total']:.2f} |\n"
     table += "| **Total** |              | **S/ {:.2f}**      |\n".format(sum(item['Precio Total'] for item in order_details))
-    print(get_order_json(order_details))
     return table
 
 ##Pendiente

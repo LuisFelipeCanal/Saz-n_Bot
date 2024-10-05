@@ -157,7 +157,12 @@ def generate_response(prompt, temperature=0,max_tokens=1000):
     # Extraemos el JSON del pedido confirmado
     order_json = extract_order_json(response)
     # Guardar el JSON en el log
-    if order_json:
+    def check_null_values(data):
+        for key, value in data.items():
+            if value is None:
+                return False  # Retorna False si encuentra un valor null
+        return True
+    if order_json and check_null_values(order_json):
         logging.info(f"Pedido confirmado en formato JSON: {order_json}")
     return response
 

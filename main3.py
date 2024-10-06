@@ -134,9 +134,7 @@ def extract_order_json(response):
 
     response_content = extraction.choices[0].message.content
     # Intenta cargar como JSON
-    json_data = json.loads(response_content)
-    if json_data:  # Asegurarse de que no esté vacío
-       return json_data
+    return response_content
     #except json.JSONDecodeError:
      #   pass
     

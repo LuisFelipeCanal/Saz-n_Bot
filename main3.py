@@ -134,8 +134,6 @@ def extract_order_json(response):
     response_content = extraction.choices[0].message.content.strip()
     if response_content.startswith("{") and response_content.endswith("}"):
         return response_content  # Devuelve el JSON completo
-    else:
-        return "El pedido aún no está confirmado"
 
 
 def generate_response(prompt, temperature=0,max_tokens=1000):

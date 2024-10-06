@@ -148,6 +148,11 @@ def generate_response(prompt, temperature=0,max_tokens=1000):
     )
     response = completion.choices[0].message.content
     st.session_state["messages"].append({"role": "assistant", "content": response})
+    # Extraer JSON del pedido confirmado
+    order_json = extract_order_json(response)
+    st.markdown(order_json)
+    # Registrar en log en formato JSON puro
+    logging.info(json.dumps(order_json, indent=4) if order_json else '{}')
     return response
 
 # Ajustar el tono del bot
@@ -196,10 +201,6 @@ if prompt := st.chat_input():
     output = generate_response(prompt)
     with st.chat_message("assistant", avatar="👨‍🍳"):
         st.markdown(output)
-    # Extraer JSON del pedido confirmado
-    order_json = extract_order_json(output)
-    st.markdown(order_json)
-    # Registrar en log en formato JSON puro
-    logging.info(json.dumps(order_json, indent=4) if order_json else '{}')
+    
 
 

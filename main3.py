@@ -140,8 +140,13 @@ def extract_order_json(response):
         st.markdown(type(order_json))
         # Verifica si el JSON es un diccionario
         if isinstance(order_json, dict):
+            if all(order_json[key] not in (None, '', [], {}) for key in order_json):
+                return order_json
+            else:
+                print("Advertencia: Hay claves con valores nulos o vacíos en el pedido.")
+                return {}
             # Verifica que todas las claves en order_json tengan valores no nulos
-            return order_json if order_json else {}
+            #return order_json if order_json else {}
         
         # Si el JSON es una lista, devuelves un diccionario vacío o manejas la lista de otro modo
         elif isinstance(order_json, list):

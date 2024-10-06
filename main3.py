@@ -136,7 +136,7 @@ def extract_order_json(response):
         return order_json if order_json else {}
     except json.JSONDecodeError:
         return {}
-    return response_content
+    #return response_content
 
 
 

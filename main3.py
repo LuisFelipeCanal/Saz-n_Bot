@@ -112,10 +112,14 @@ def get_system_prompt(menu, distritos):
     Recuerda verificar que el pedido sea correcto antes de registrarlo.
     """
     return system_prompt.replace("\n", " ")
+    
 def extract_order_json(response):
-    """Extrae el pedido confirmado en formato JSON desde la respuesta del bot."""
+    """Extrae el pedido confirmado en formato JSON desde la respuesta del bot solo si todos los campos tienen valores completos."""
     prompt = (
-        f"Extrae la información completa del pedido confirmado en formato JSON de la siguiente respuesta: '{response}'. Devuelve el JSON incluido con los campos metodo_pago,timestamp_confirmacion, en un diccionario solo si todos los campos tienen valores no nulos. Limitale a solo devolver el JSON si cumple las restricciones anteriores o sino devuelve 'El pedido aún no está confirmado'."
+        f"Extrae el pedido confirmado en formato JSON de la siguiente respuesta: '{response}'. "
+        f"Devuelve solo el JSON en un diccionario si todos los campos tienen valores no nulos ni vacíos, "
+        f"incluyendo los campos 'metodo_pago' y 'timestamp_confirmacion'. Si algún campo está nulo o vacío, "
+        f"devuelve el mensaje: 'El pedido aún no está confirmado'."
     )
     
     extraction = client.chat.completions.create(
@@ -129,7 +133,12 @@ def extract_order_json(response):
         stream=False,
     )
 
-    return extraction.choices[0].message.content
+    # Procesa la respuesta para devolver solo el JSON completo o el mensaje de confirmación
+    response_content = extraction.choices[0].message.content.strip()
+    if response_content.startswith("{") and response_content.endswith("}"):
+        return response_content  # Devuelve el JSON completo
+    else:
+        return "El pedido aún no está confirmado"
 
 
 def generate_response(prompt, temperature=0,max_tokens=1000):

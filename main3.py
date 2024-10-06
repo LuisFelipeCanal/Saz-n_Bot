@@ -117,11 +117,12 @@ def get_system_prompt(menu, distritos):
 def extract_order_json(response):
     """Extrae el pedido confirmado en formato JSON desde la respuesta del bot solo si todos los campos tienen valores completos."""
     prompt = f"Extrae la información del pedido de la siguiente respuesta: '{response}'. Si el pedido está confirmado proporciona una salida en formato JSON con las claves: Platos, Precio total, Metodo de pago y timestamp_confirmacion. Si el pedido no está confirmado devuelve una lista vacía."
-    
-    
+
     extraction = client.chat.completions.create(
-        messages=[{"role": "system", "content": "Eres un asistente que solo responde en JSON. Responde únicamente con un JSON o una lista vacía.."},
-                  {"role": "user", "content": prompt}],
+        messages=[
+            {"role": "system", "content": "Eres un asistente que solo responde en JSON. Responde únicamente con un JSON o una lista vacía."},
+            {"role": "user", "content": prompt}
+        ],
         model="llama3-8b-8192",
         temperature=0,
         max_tokens=300,
@@ -131,17 +132,26 @@ def extract_order_json(response):
     )
 
     response_content = extraction.choices[0].message.content
-    #Intenta cargar como JSON
+    
+    # Intenta cargar como JSON
     try:
         order_json = json.loads(response_content)
-        # Verifica que todas las claves en order_json tengan valores no nulos
         
-        return order_json if order_json else {}
+        # Claves esperadas
+        expected_keys = ['Platos', 'Precio total', 'Metodo de pago', 'timestamp_confirmacion']
+        
+        # Rellena con null si alguna clave no existe o tiene un valor nulo
+        for key in expected_keys:
+            if key not in order_json or order_json[key] is None:
+                order_json[key] = None  # Asignar null (None en Python)
+
+        # Verifica que todas las claves en order_json tengan valores no nulos
+        if all(order_json[key] is not None for key in expected_keys):
+            return order_json
+        
+        return {}  # Retorna un dict vacío si alguna clave tiene valor nulo
     except json.JSONDecodeError:
         return {}
-    #return response_content
-
-
 
 def generate_response(prompt, temperature=0,max_tokens=1000):
     """Enviar el prompt a Groq y devolver la respuesta con un límite de tokens."""
@@ -159,12 +169,8 @@ def generate_response(prompt, temperature=0,max_tokens=1000):
     # Extraer JSON del pedido confirmado
     order_json = extract_order_json(response)
     st.markdown(order_json)
-    # Registrar en log en formato JSON puro
-    if all(value is not None for value in order_json.values()):
-        logging.info(json.dumps(order_json, indent=4) if order_json else '{}')
-    else:
-        return {} 
-    #logging.info(json.dumps(order_json, indent=4) if order_json else '{}')
+    st.markdown(type(order_json))
+    logging.info(json.dumps(order_json, indent=4) if order_json else '{}')
     return response
 
 # Ajustar el tono del bot

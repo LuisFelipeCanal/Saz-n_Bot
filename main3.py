@@ -115,23 +115,9 @@ def get_system_prompt(menu, distritos):
     
 def extract_order_json(response):
     """Extrae el pedido confirmado en formato JSON desde la respuesta del bot solo si todos los campos tienen valores completos."""
-    # Estructura de JSON esperada
-    json_structure_example = """
-    {
-        "Platos": ["list of dishes"],
-        "Precio total": "decimal",
-        "Método de pago": "string",
-        "timestamp_confirmacion": "ISO 8601 datetime"
-    }
-    """
-
-    prompt = (
-        f"Extrae la información del pedido en formato JSON de la siguiente respuesta: '{response}'. "
-        f"La respuesta debe ser un JSON con esta estructura exacta:\n\n{json_structure_example}\n\n"
-        "Incluye únicamente las claves 'Platos', 'Precio total', 'Método de pago' y 'timestamp_confirmacion'. "
-        "Si no están todos los valores confirmados, devuelve un JSON vacío `{}`."
-    )
-
+    prompt = f"Extrae la información del pedido de la siguiente respuesta: '{response}'. Si el pedido está confirmado proporciona una salida en formato JSON con las claves: Platos, Precio total, Método de pago y timestamp_confirmacion. Si el pedido no está confirmado devuelve una lista vacía."
+    
+    
     extraction = client.chat.completions.create(
         messages=[{"role": "system", "content": "You are a helpful assistant for a food ordering service."},
                   {"role": "user", "content": prompt}],
@@ -144,20 +130,8 @@ def extract_order_json(response):
     )
 
     response_content = extraction.choices[0].message.content
-
-    # Intentar cargar el JSON si está en formato correcto
-    try:
-        order_json = json.loads(response_content)
-    except json.JSONDecodeError:
-        return {}  # Retorna un JSON vacío si no puede decodificar
-
-    # Validar que todas las claves esperadas estén presentes en el JSON
-    expected_keys = {"Platos", "Precio total", "Método de pago", "timestamp_confirmacion"}
-    if all(key in order_json for key in expected_keys):
-        return order_json
-    else:
-        return {}  # Retorna JSON vacío si faltan claves
-
+    # Intenta cargar como JSON
+    return response_content
 
 
 
@@ -176,7 +150,7 @@ def generate_response(prompt, temperature=0,max_tokens=1000):
     st.session_state["messages"].append({"role": "assistant", "content": response})
     # Extraer JSON del pedido confirmado
     order_json = extract_order_json(response)
-
+    st.markdown(order_json)
     # Registrar en log en formato JSON puro
     logging.info(json.dumps(order_json, indent=4) if order_json else '{}')
     return response

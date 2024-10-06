@@ -105,7 +105,7 @@ def get_system_prompt(menu, distritos):
     El monto total del pedido no acepta descuentos ni rectificaciones del precio. 
 
     Pregunta al cliente: "¿Estás de acuerdo con el pedido?" y espera su respuesta. 
-    Una vez que confirme, pregunta: "¿Cuál es tu método de pago? ¿Deseas pagar con tarjeta de crédito, efectivo o algún otro método?". 
+    Una vez que confirme, pregunta: "¿Cuál es tu metodo de pago? ¿Deseas pagar con tarjeta de crédito, efectivo o algún otro metodo?". 
 
     Una vez que el cliente confirme el pedido, registra la hora actual de Perú como el timestamp {hora_lima} de la confirmación. 
     El pedido confirmado será:\n
@@ -116,11 +116,11 @@ def get_system_prompt(menu, distritos):
    
 def extract_order_json(response):
     """Extrae el pedido confirmado en formato JSON desde la respuesta del bot solo si todos los campos tienen valores completos."""
-    prompt = f"Extrae la información del pedido de la siguiente respuesta: '{response}'. Si el pedido está confirmado proporciona una salida en formato JSON con las claves: Plato,Cantidad,Precio total,Total, Metodo de pago y timestamp_confirmacion. Si el pedido no está confirmado devuelve una diccionario vacío."
+    prompt = f"Extrae la información del pedido de la siguiente respuesta: '{response}'. Si el pedido está confirmado proporciona una salida en formato JSON con las claves: Platos(contine los platos con la cantidad y precio total),Total, Metodo de pago y timestamp_confirmacion. Si el pedido no está confirmado devuelve una diccionario vacio."
 
     extraction = client.chat.completions.create(
         messages=[
-            {"role": "system", "content": "Eres un asistente que solo responde en JSON. Responde únicamente con un JSON o una diccionario vacío."},
+            {"role": "system", "content": "Eres un asistente que solo responde en JSON. Responde únicamente con un JSON o una lista vacio."},
             {"role": "user", "content": prompt}
         ],
         model="llama3-8b-8192",

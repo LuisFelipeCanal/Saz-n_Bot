@@ -69,17 +69,17 @@ def display_distritos(distritos):
 
 def display_postre(postre):
     """Mostrar el menú con descripciones."""
-    menu_text = "Aquí está lista de postres:\n"
+    postre_text = "Aquí está lista de postres:\n"
     for index, row in postre.iterrows():
-        menu_text += f"{row['Postre']}: {row['Descripción']} - {row['Precio']} soles\n"
-    return menu_text
+        postre_text += f"{row['Postre']}: {row['Descripción']} - {row['Precio']} soles\n"
+    return postre_text
 
 def display_bebida(bebida):
     """Mostrar el menú con descripciones."""
-    menu_text = "Aquí está lista de postres:\n"
+    bebida_text = "Aquí está lista de bebidas:\n"
     for index, row in bebida.iterrows():
-        menu_text += f"{row['bebida']}: {row['descripcion']} - {row['precio']} soles\n"
-    return menu_text
+        bebida_text += f"{row['bebida']}: {row['descripcion']} - {row['precio']} soles\n"
+    return bebida_text
 		
 # Cargar el menú y distritos
 menu = load("carta.csv")

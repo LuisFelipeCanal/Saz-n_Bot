@@ -138,10 +138,10 @@ def extract_order_json(response):
         order_json = json.loads(response_content)
         
         # Claves esperadas
-        expected_keys = ['Platos', 'Precio total', 'Metodo de pago', 'timestamp_confirmacion']
+        #expected_keys = ['Platos', 'Precio total', 'Metodo de pago', 'timestamp_confirmacion']
         
         # Rellena con null si alguna clave no existe o tiene un valor nulo
-        for key in expected_keys:
+        for key in order_json:
             if key not in order_json or order_json[key] is None:
                 order_json[key] = None  # Asignar null (None en Python)
 

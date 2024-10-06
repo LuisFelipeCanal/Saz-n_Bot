@@ -24,16 +24,16 @@ st.markdown(intro)
 
 
 # Cargar el menú desde un archivo CSV
-def load_menu(file_path):
+def load(file_path):
     """Cargar el menú desde un archivo CSV con columnas Plato, Descripción y Precio."""
-    menu = pd.read_csv(file_path)
-    return menu
+    load = pd.read_csv(file_path)
+    return load
 
 # Cargar los distritos de reparto desde un archivo CSV
-def load_distritos(file_path):
-    """Cargar los distritos de reparto desde un archivo CSV."""
-    distritos = pd.read_csv(file_path)
-    return distritos
+#def load_distritos(file_path):
+ #   """Cargar los distritos de reparto desde un archivo CSV."""
+  #  distritos = pd.read_csv(file_path)
+   # return distritos
 
 def format_menu(menu):
     if menu.empty:
@@ -67,9 +67,25 @@ def display_distritos(distritos):
         distritos_text += f"**{row['Distrito']}**\n"
     return distritos_text
 
+def display_postre(postre):
+    """Mostrar el menú con descripciones."""
+    menu_text = "Aquí está lista de postres:\n"
+    for index, row in menu.iterrows():
+        menu_text += f"{row['Postre']}: {row['Descripción']} - {row['Precio']} soles\n"
+    return menu_text
+
+def display_bebida(bebida):
+    """Mostrar el menú con descripciones."""
+    menu_text = "Aquí está lista de postres:\n"
+    for index, row in menu.iterrows():
+        menu_text += f"{row['bebida']}: {row['descripcion']} - {row['precio']} soles\n"
+    return menu_text
+		
 # Cargar el menú y distritos
-menu = load_menu("carta.csv")
-distritos = load_distritos("distritos.csv")
+menu = load("carta.csv")
+distritos = load("distritos.csv")
+postres= load("Bebidas_del_restaurante.csv")
+bebidas= load("Postres_del_Restaurante.csv")
 
 def display_confirmed_order(order_details):
     """Genera una tabla en formato Markdown para el pedido confirmado."""
@@ -102,8 +118,11 @@ def get_system_prompt(menu, distritos):
     |-----------|--------------|------------------|\n
     |           |              |                  |\n
     | **Total** |              | **S/ 0.00**      |\n
-    El monto total del pedido no acepta descuentos ni rectificaciones del precio. 
-
+    El monto total del pedido no acepta descuentos ni rectificaciones del precio.
+    
+    Antes de confirmar el pedido pregunta al cliente si desea algun postre o bebida. Si el cliente decide por un postre aqui tienes el la lista de postres para que lo muestres a los clientes:\n{display_postre(postres)}\n
+    Si el cliente decide por bebida aqui tienes el la lista de postres para que lo muestres a los clientes\n{display_bebida(bebidas)}\n
+    
     Pregunta al cliente: "¿Estás de acuerdo con el pedido?" y espera su respuesta. 
     Una vez que confirme, pregunta: "¿Cuál es tu método de pago? ¿Deseas pagar con tarjeta, efectivo o algún otro método?". 
     
@@ -136,8 +155,8 @@ def extract_order_json(response):
     # Intenta cargar como JSON
     try:
         order_json = json.loads(response_content)
-        st.markdown(order_json)
-        st.markdown(type(order_json))
+        #st.markdown(order_json)
+        #st.markdown(type(order_json))
         # Verifica si el JSON es un diccionario
         if isinstance(order_json, dict):
             if all(order_json[key] not in (None, '', [], {}) for key in order_json):
@@ -176,8 +195,8 @@ def generate_response(prompt, temperature=0,max_tokens=1000):
     st.session_state["messages"].append({"role": "assistant", "content": response})
     # Extraer JSON del pedido confirmado
     order_json = extract_order_json(response)
-    st.markdown(order_json)
-    st.markdown(type(order_json))
+    #st.markdown(order_json)
+    #st.markdown(type(order_json))
     logging.info(json.dumps(order_json, indent=4) if order_json else '{}')
     return response
 

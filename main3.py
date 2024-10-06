@@ -119,7 +119,7 @@ def extract_order_json(response):
     
     
     extraction = client.chat.completions.create(
-        messages=[{"role": "system", "content": "You are a helpful assistant for a food ordering service."},
+        messages=[{"role": "system", "content": "Eres un asistente que solo responde en JSON. Responde únicamente con un JSON o una lista vacía.."},
                   {"role": "user", "content": prompt}],
         model="llama3-8b-8192",
         temperature=0,

@@ -134,7 +134,12 @@ def extract_order_json(response):
     #Intenta cargar como JSON
     try:
         order_json = json.loads(response_content)
-        return order_json if order_json else {}
+        # Verifica que todas las claves en order_json tengan valores no nulos
+        if all(value is not None for value in order_json.values()):
+            return order_json
+        else:
+            return {} 
+        #return order_json if order_json else {}
     except json.JSONDecodeError:
         return {}
     #return response_content
@@ -155,10 +160,10 @@ def generate_response(prompt, temperature=0,max_tokens=1000):
     response = completion.choices[0].message.content
     st.session_state["messages"].append({"role": "assistant", "content": response})
     # Extraer JSON del pedido confirmado
-    #order_json = extract_order_json(response)
-    #st.markdown(order_json)
+    order_json = extract_order_json(response)
+    st.markdown(order_json)
     # Registrar en log en formato JSON puro
-    #logging.info(json.dumps(order_json, indent=4) if order_json else '{}')
+    logging.info(json.dumps(order_json, indent=4) if order_json else '{}')
     return response
 
 # Ajustar el tono del bot

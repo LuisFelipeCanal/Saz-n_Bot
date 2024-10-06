@@ -140,7 +140,7 @@ def extract_order_json(response):
         # Verifica si el JSON es un diccionario
         if isinstance(order_json, dict):
             # Verifica que todas las claves en order_json tengan valores no nulos
-            return order_json if order_json else {}
+            return order_json 
         
         # Si el JSON es una lista, devuelves un diccionario vacío o manejas la lista de otro modo
         elif isinstance(order_json, list):

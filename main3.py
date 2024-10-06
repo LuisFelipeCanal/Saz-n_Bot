@@ -127,7 +127,7 @@ def get_system_prompt(menu, distritos):
     return system_prompt.replace("\n", " ")
 def extract_order_json(response):
     """Extrae el pedido confirmado en formato JSON desde la respuesta del bot."""
-    prompt = f"Extrae la información del pedido confirmado en formato JSON de la siguiente respuesta: '{response}'. Solo devuelve el JSON sin ningún carácter adicional y con lo datos completos, pero que el JSON contenga el metodo_pago y timestamp_confirmacion."
+    prompt = f"Extrae la información del pedido confirmado en formato JSON de la siguiente respuesta: '{response}'. Solo devuelve el JSON en un diccionario sin ningún carácter adicional y con lo datos completos, pero que el JSON contenga el metodo_pago y timestamp_confirmacion."
     
     extraction = client.chat.completions.create(
         messages=[{"role": "system", "content": "You are a helpful assistant for a food ordering service."},
@@ -160,7 +160,7 @@ def generate_response(prompt, temperature=0,max_tokens=1000):
     def check_null_values(data):
         for key, value in data.items():
             if value is None:
-                return False  # Retorna False si encuentra un valor null
+                return False  
         return True
     if order_json and check_null_values(order_json):
         logging.info(f"Pedido confirmado en formato JSON: {order_json}")

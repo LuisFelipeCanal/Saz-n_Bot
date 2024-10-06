@@ -115,11 +115,8 @@ def get_system_prompt(menu, distritos):
     
 def extract_order_json(response):
     """Extrae el pedido confirmado en formato JSON desde la respuesta del bot solo si todos los campos tienen valores completos."""
-    prompt = (
-        f"Extrae la información del pedido de la siguiente respuesta: '{response}'. Si el pedido está confirmado proporciona una 
-        salida en formato JSON con las claves: Platos, Precio total, Método de pago y timestamp_confirmacion. 
-        Si el pedido no está confirmado devuelve una lista vacía."
-    )
+    prompt = f"Extrae la información del pedido de la siguiente respuesta: '{response}'. Si el pedido está confirmado proporciona una salida en formato JSON con las claves: Platos, Precio total, Método de pago y timestamp_confirmacion. Si el pedido no está confirmado devuelve una lista vacía."
+    
     
     extraction = client.chat.completions.create(
         messages=[{"role": "system", "content": "You are a helpful assistant for a food ordering service."},

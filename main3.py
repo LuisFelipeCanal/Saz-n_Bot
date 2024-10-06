@@ -113,7 +113,7 @@ def get_system_prompt(menu, distritos):
     Recuerda verificar que el pedido sea correcto antes de registrarlo.
     Por último, almacena los datos del pedido: Plato, Cantidad, Precio Total, metodo de pago y timestamp de confirmacion  en formato JSON en la variable {pedido}
     """
-    print(pedido)
+    logging.info(pedido)
     return system_prompt.replace("\n", " ")
    
 #def extract_order_json(response):

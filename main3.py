@@ -116,11 +116,11 @@ def get_system_prompt(menu, distritos):
    
 def extract_order_json(response):
     """Extrae el pedido confirmado en formato JSON desde la respuesta del bot solo si todos los campos tienen valores completos."""
-    prompt = f"Extrae la información del pedido de la siguiente respuesta: '{response}'. Si el pedido está confirmado proporciona una salida en formato JSON con las claves: Platos,Cantidad,Precio total, Metodo de pago y timestamp_confirmacion. Si el pedido no está confirmado devuelve una diccionario vacío."
+    prompt = f"Extrae la información del pedido de la siguiente respuesta: '{response}'. Si el pedido está confirmado proporciona una salida en formato JSON con las claves: Plato,Cantidad,Precio total,Total, Metodo de pago y timestamp_confirmacion. Si el pedido no está confirmado devuelve una diccionario vacío."
 
     extraction = client.chat.completions.create(
         messages=[
-            {"role": "system", "content": "Eres un asistente que solo responde en JSON. Responde únicamente con un JSON o una lista vacía."},
+            {"role": "system", "content": "Eres un asistente que solo responde en JSON. Responde únicamente con un JSON o una diccionario vacío."},
             {"role": "user", "content": prompt}
         ],
         model="llama3-8b-8192",
@@ -136,6 +136,8 @@ def extract_order_json(response):
     # Intenta cargar como JSON
     try:
         order_json = json.loads(response_content)
+        st.markdown(order_json)
+        st.markdown(type(order_json))
         # Verifica si el JSON es un diccionario
         if isinstance(order_json, dict):
             # Verifica que todas las claves en order_json tengan valores no nulos
@@ -169,6 +171,8 @@ def generate_response(prompt, temperature=0,max_tokens=1000):
     st.session_state["messages"].append({"role": "assistant", "content": response})
     # Extraer JSON del pedido confirmado
     order_json = extract_order_json(response)
+    st.markdown(order_json)
+    st.markdown(type(order_json))
     logging.info(json.dumps(order_json, indent=4) if order_json else '{}')
     return response
 

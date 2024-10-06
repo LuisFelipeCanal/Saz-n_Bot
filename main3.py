@@ -125,7 +125,7 @@ def extract_order_json(response):
         messages=[{"role": "system", "content": "You are a helpful assistant for a food ordering service."},
                   {"role": "user", "content": prompt}],
         model="llama3-8b-8192",
-        temperature=0.5,
+        temperature=0.6,
         max_tokens=300,
         top_p=1,
         stop=None,
@@ -133,15 +133,14 @@ def extract_order_json(response):
     )
 
     response_content = extraction.choices[0].message.content
-    try:
-        # Intenta cargar como JSON
-        json_data = json.loads(response_content)
-        if json_data:  # Asegurarse de que no esté vacío
-            return json_data
-    except json.JSONDecodeError:
-        pass
+    # Intenta cargar como JSON
+    json_data = json.loads(response_content)
+    if json_data:  # Asegurarse de que no esté vacío
+       return json_data
+    #except json.JSONDecodeError:
+     #   pass
     
-    return []
+    # return []
 
 
 

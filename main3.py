@@ -122,7 +122,7 @@ def extract_order_json(response):
         messages=[{"role": "system", "content": "You are a helpful assistant for a food ordering service."},
                   {"role": "user", "content": prompt}],
         model="llama3-8b-8192",
-        temperature=0.6,
+        temperature=0,
         max_tokens=300,
         top_p=1,
         stop=None,
@@ -155,9 +155,9 @@ def generate_response(prompt, temperature=0,max_tokens=1000):
     st.session_state["messages"].append({"role": "assistant", "content": response})
     # Extraer JSON del pedido confirmado
     order_json = extract_order_json(response)
-    
-    # Registrar en log
-    logging.info(f"Pedido confirmado en formato JSON: {json.dumps(order_json, indent=4) if order_json else '[]'}")
+
+    # Registrar en log en formato JSON puro
+    logging.info(json.dumps(order_json, indent=4) if order_json else '{}')
     return response
 
 # Ajustar el tono del bot

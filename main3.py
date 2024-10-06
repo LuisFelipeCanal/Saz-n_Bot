@@ -111,34 +111,32 @@ def get_system_prompt(menu, distritos):
     El pedido confirmado será:\n
     {display_confirmed_order([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0}])}\n
     Recuerda verificar que el pedido sea correcto antes de registrarlo.
-    Por último, almacena los datos del pedido: Plato, Cantidad, Precio Total, metodo de pago y timestamp de confirmacion  en formato JSON en la variable {pedido}
     """
-    logging.info(pedido)
     return system_prompt.replace("\n", " ")
    
-#def extract_order_json(response):
- #   """Extrae el pedido confirmado en formato JSON desde la respuesta del bot solo si todos los campos tienen valores completos."""
-  #  prompt = f"Extrae la información del pedido de la siguiente respuesta: '{response}'. Si el pedido está confirmado proporciona una salida en formato JSON con las claves: Platos, Precio total, Metodo de pago y timestamp_confirmacion. Si el pedido no está confirmado devuelve una lista vacía."
+def extract_order_json(response):
+    """Extrae el pedido confirmado en formato JSON desde la respuesta del bot solo si todos los campos tienen valores completos."""
+    prompt = f"Extrae la información del pedido de la siguiente respuesta: '{response}'. Si el pedido está confirmado proporciona una salida en formato JSON con las claves: Platos, Precio total, Metodo de pago y timestamp_confirmacion. Si el pedido no está confirmado devuelve una lista vacía."
     
     
-   # extraction = client.chat.completions.create(
-    #    messages=[{"role": "system", "content": "Eres un asistente que solo responde en JSON. Responde únicamente con un JSON o una lista vacía.."},
-     #             {"role": "user", "content": prompt}],
-      #  model="llama3-8b-8192",
-       # temperature=0,
-        #max_tokens=300,
-       # top_p=1,
-        #stop=None,
-        #stream=False,
-    #)
+    extraction = client.chat.completions.create(
+        messages=[{"role": "system", "content": "Eres un asistente que solo responde en JSON. Responde únicamente con un JSON o una lista vacía.."},
+                  {"role": "user", "content": prompt}],
+        model="llama3-8b-8192",
+        temperature=0,
+        max_tokens=300,
+        top_p=1,
+        stop=None,
+        stream=False,
+    )
 
-    #response_content = extraction.choices[0].message.content
-    # Intenta cargar como JSON
-    #try:
-     #   order_json = json.loads(response_content)
-      #  return order_json if order_json else {}
-    #except json.JSONDecodeError:
-     #   return {}
+    response_content = extraction.choices[0].message.content
+    #Intenta cargar como JSON
+    try:
+        order_json = json.loads(response_content)
+        return order_json if order_json else {}
+    except json.JSONDecodeError:
+        return {}
     #return response_content
 
 

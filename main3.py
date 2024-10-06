@@ -139,12 +139,12 @@ def extract_order_json(response):
         st.markdown(order_json)
         st.markdown(type(order_json))
         # Verifica si el JSON es un diccionario
-        if isinstance(order_json, dict):
+        if isinstance(order_json[0], dict):
             # Verifica que todas las claves en order_json tengan valores no nulos
             return order_json 
         
         # Si el JSON es una lista, devuelves un diccionario vacío o manejas la lista de otro modo
-        elif isinstance(order_json, list):
+        elif isinstance(order_json[0], list):
             print("Advertencia: Se recibió una lista en lugar de un diccionario.")
             return {}
         

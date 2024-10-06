@@ -113,8 +113,9 @@ def get_system_prompt(menu, distritos):
     Recuerda verificar que el pedido sea correcto antes de registrarlo.
     Por último, almacena los datos del pedido: Plato, Cantidad, Precio Total, metodo de pago y timestamp de confirmacion  en formato JSON en la variable {pedido}
     """
+    print(pedido)
     return system_prompt.replace("\n", " ")
-    
+   
 #def extract_order_json(response):
  #   """Extrae el pedido confirmado en formato JSON desde la respuesta del bot solo si todos los campos tienen valores completos."""
   #  prompt = f"Extrae la información del pedido de la siguiente respuesta: '{response}'. Si el pedido está confirmado proporciona una salida en formato JSON con las claves: Platos, Precio total, Metodo de pago y timestamp_confirmacion. Si el pedido no está confirmado devuelve una lista vacía."

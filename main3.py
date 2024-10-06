@@ -146,7 +146,7 @@ def check_null_values(data):
     # Verificar si data es un diccionario
     if not isinstance(data, dict):
         return False
-    for key, value in data.items():
+    for key, value in data:
         if value is None or null:
             return False  # Retorna False si encuentra un valor null
     return True 

@@ -123,7 +123,7 @@ def extract_order_json(response):
                   {"role": "user", "content": prompt}],
         model="llama3-8b-8192",
         temperature=0.5,
-        max_tokens=150,
+        max_tokens=300,
         top_p=1,
         stop=None,
         stream=False,

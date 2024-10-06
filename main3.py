@@ -99,7 +99,7 @@ def display_confirmed_order(order_details):
 ##Pendiente
 
 
-def get_system_prompt(menu, distritos):
+def get_system_prompt(menu, distritos,postres,bebidas):
     """Definir el prompt del sistema para el bot de Sazón incluyendo el menú y distritos."""
     lima_tz = pytz.timezone('America/Lima') # Define la zona horaria de Lima
     hora_lima = datetime.now(lima_tz).strftime("%Y-%m-%d %H:%M:%S") # Obtiene la hora actual en Lima

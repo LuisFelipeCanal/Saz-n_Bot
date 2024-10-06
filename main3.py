@@ -96,7 +96,7 @@ def get_system_prompt(menu, distritos):
     Asegúrate de usar solo español peruano en tus respuestas, evitando cualquier término como preferís debe ser prefiere. 
     Verifica que el cliente haya ingresado el método de pedido antes de continuar. Si el pedido es para entrega, 
     asegúrate de que el distrito esté disponible y confirma con el cliente el distrito de entrega. 
-    Si el pedido es para recoger, pregunta si desea recoger en el local. Después, resume 
+    Si el pedido es para recoger, invitalo a acercarse a nuestro local ubicado en UPCH123. Después, resume 
     el pedido en la siguiente tabla:\n
     | **Plato** | **Cantidad** | **Precio Total** |\n
     |-----------|--------------|------------------|\n

@@ -8,7 +8,8 @@ import re
 import pytz
 import json
 import logging
-
+# Configura el logger
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 # Inicializar el cliente de Groq con la clave API
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
@@ -69,20 +70,6 @@ def display_distritos(distritos):
 # Cargar el menú y distritos
 menu = load_menu("carta.csv")
 distritos = load_distritos("distritos.csv")
-
-# Configura el logger
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-def get_order_json(order_details): 
-    """Genera el pedido confirmado en formato JSON.""" 
-    order_summary = {
-        "pedido": order_details,
-        "total": sum(item['Precio Total'] for item in order_details)
-    } 
-    order_json = json.dumps(order_summary, indent=4) 
-    logging.info(f"Pedido confirmado en formato JSON: {order_json}")
-    return order_json
-
 
 def display_confirmed_order(order_details):
     """Genera una tabla en formato Markdown para el pedido confirmado."""
@@ -158,6 +145,7 @@ def generate_response(prompt, temperature=0,max_tokens=1000):
     st.session_state["messages"].append({"role": "assistant", "content": response})
     # Extraemos el JSON del pedido confirmado
     order_json = extract_order_json(response)
+    log_json = json.dumps(order_json, indent=4)
     logging.info(f"Pedido confirmado en formato JSON: {order_json}")
     return response
 

@@ -136,7 +136,8 @@ def extract_order_json(response):
     # Intenta cargar como JSON
     try:
         order_json = json.loads(response_content)
-        
+        st.markdown(order_json)
+        st.markdown(type(order_json))
         # Verifica si el JSON es un diccionario
         if isinstance(order_json, dict):
             # Verifica que todas las claves en order_json tengan valores no nulos

@@ -137,20 +137,22 @@ def extract_order_json(response):
     try:
         order_json = json.loads(response_content)
         
-        # Claves esperadas
-        #expected_keys = ['Platos', 'Precio total', 'Metodo de pago', 'timestamp_confirmacion']
+        # Verifica si el JSON es un diccionario
+        if isinstance(order_json, dict):
+            # Verifica que todas las claves en order_json tengan valores no nulos
+            return order_json if order_json else {}
         
-        # Rellena con null si alguna clave no existe o tiene un valor nulo
-        for key in order_json:
-            if key not in order_json or order_json[key] is None:
-                order_json[key] = None  # Asignar null (None en Python)
-
-        # Verifica que todas las claves en order_json tengan valores no nulos
-        if all(order_json[key] is not None for key in order_json):
-            return order_json
+        # Si el JSON es una lista, devuelves un diccionario vacío o manejas la lista de otro modo
+        elif isinstance(order_json, list):
+            print("Advertencia: Se recibió una lista en lugar de un diccionario.")
+            return {}
         
-        return {}  # Retorna un dict vacío si alguna clave tiene valor nulo
+        # Si no es ni lista ni diccionario, retorna un diccionario vacío
+        else:
+            return {}
+    
     except json.JSONDecodeError:
+        # Manejo de error en caso de que el JSON no sea válido
         return {}
 
 def generate_response(prompt, temperature=0,max_tokens=1000):

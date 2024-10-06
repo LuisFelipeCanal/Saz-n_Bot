@@ -116,7 +116,7 @@ def get_system_prompt(menu, distritos):
    
 def extract_order_json(response):
     """Extrae el pedido confirmado en formato JSON desde la respuesta del bot solo si todos los campos tienen valores completos."""
-    prompt = f"Extrae la información del pedido de la siguiente respuesta: '{response}'. Si el pedido está confirmado proporciona una salida en formato JSON con las claves: Platos, Precio total, Metodo de pago y timestamp_confirmacion. Si el pedido no está confirmado devuelve una lista vacía."
+    prompt = f"Extrae la información del pedido de la siguiente respuesta: '{response}'. Si el pedido está confirmado proporciona una salida en formato JSON con las claves: Platos, Precio total, Metodo de pago y timestamp_confirmacion. Si el pedido no está confirmado devuelve una diccionario vacío."
 
     extraction = client.chat.completions.create(
         messages=[
@@ -139,12 +139,12 @@ def extract_order_json(response):
         st.markdown(order_json)
         st.markdown(type(order_json))
         # Verifica si el JSON es un diccionario
-        if isinstance(order_json[0], dict):
+        if isinstance(order_json, dict):
             # Verifica que todas las claves en order_json tengan valores no nulos
             return order_json 
         
         # Si el JSON es una lista, devuelves un diccionario vacío o manejas la lista de otro modo
-        elif isinstance(order_json[0], list):
+        elif isinstance(order_json, list):
             print("Advertencia: Se recibió una lista en lugar de un diccionario.")
             return {}
         

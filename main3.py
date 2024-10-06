@@ -141,6 +141,15 @@ def extract_order_json(response):
     )
 
     return extraction.choices[0].message.content
+
+def check_null_values(data):
+    # Verificar si data es un diccionario
+    if not isinstance(data, dict):
+        return False
+    for key, value in data.items():
+        if value is None or null:
+            return False  # Retorna False si encuentra un valor null
+    return True 
 def generate_response(prompt, temperature=0,max_tokens=1000):
     """Enviar el prompt a Groq y devolver la respuesta con un límite de tokens."""
     st.session_state["messages"].append({"role": "user", "content": prompt})
@@ -156,12 +165,6 @@ def generate_response(prompt, temperature=0,max_tokens=1000):
     st.session_state["messages"].append({"role": "assistant", "content": response})
     # Extraemos el JSON del pedido confirmado
     order_json = extract_order_json(response)
-    # Guardar el JSON en el log
-    def check_null_values(data):
-        for key, value in data.items():
-            if value is None:
-                return False  
-        return True
     if order_json and check_null_values(order_json):
         logging.info(f"Pedido confirmado en formato JSON: {order_json}")
     return response

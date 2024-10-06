@@ -87,6 +87,7 @@ def get_system_prompt(menu, distritos):
     """Definir el prompt del sistema para el bot de Sazón incluyendo el menú y distritos."""
     lima_tz = pytz.timezone('America/Lima') # Define la zona horaria de Lima
     hora_lima = datetime.now(lima_tz).strftime("%Y-%m-%d %H:%M:%S") # Obtiene la hora actual en Lima
+    pedido={}
     system_prompt = f"""
     Eres el bot de pedidos de Sazón. Ayudas a los clientes a hacer sus pedidos y siempre 
     eres bien amable. Aquí tienes el menú para que se lo muestres a los clientes:\n{display_menu(menu)}\n
@@ -110,32 +111,33 @@ def get_system_prompt(menu, distritos):
     El pedido confirmado será:\n
     {display_confirmed_order([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0}])}\n
     Recuerda verificar que el pedido sea correcto antes de registrarlo.
+    Por último, almacena los datos del pedido: Plato, Cantidad, Precio Total, metodo de pago y timestamp de confirmacion  en formato JSON en la variable {pedido}
     """
     return system_prompt.replace("\n", " ")
     
-def extract_order_json(response):
-    """Extrae el pedido confirmado en formato JSON desde la respuesta del bot solo si todos los campos tienen valores completos."""
-    prompt = f"Extrae la información del pedido de la siguiente respuesta: '{response}'. Si el pedido está confirmado proporciona una salida en formato JSON con las claves: Platos, Precio total, Metodo de pago y timestamp_confirmacion. Si el pedido no está confirmado devuelve una lista vacía."
+#def extract_order_json(response):
+ #   """Extrae el pedido confirmado en formato JSON desde la respuesta del bot solo si todos los campos tienen valores completos."""
+  #  prompt = f"Extrae la información del pedido de la siguiente respuesta: '{response}'. Si el pedido está confirmado proporciona una salida en formato JSON con las claves: Platos, Precio total, Metodo de pago y timestamp_confirmacion. Si el pedido no está confirmado devuelve una lista vacía."
     
     
-    extraction = client.chat.completions.create(
-        messages=[{"role": "system", "content": "Eres un asistente que solo responde en JSON. Responde únicamente con un JSON o una lista vacía.."},
-                  {"role": "user", "content": prompt}],
-        model="llama3-8b-8192",
-        temperature=0,
-        max_tokens=300,
-        top_p=1,
-        stop=None,
-        stream=False,
-    )
+   # extraction = client.chat.completions.create(
+    #    messages=[{"role": "system", "content": "Eres un asistente que solo responde en JSON. Responde únicamente con un JSON o una lista vacía.."},
+     #             {"role": "user", "content": prompt}],
+      #  model="llama3-8b-8192",
+       # temperature=0,
+        #max_tokens=300,
+       # top_p=1,
+        #stop=None,
+        #stream=False,
+    #)
 
-    response_content = extraction.choices[0].message.content
+    #response_content = extraction.choices[0].message.content
     # Intenta cargar como JSON
-    try:
-        order_json = json.loads(response_content)
-        return order_json if order_json else {}
-    except json.JSONDecodeError:
-        return {}
+    #try:
+     #   order_json = json.loads(response_content)
+      #  return order_json if order_json else {}
+    #except json.JSONDecodeError:
+     #   return {}
     #return response_content
 
 
@@ -154,10 +156,10 @@ def generate_response(prompt, temperature=0,max_tokens=1000):
     response = completion.choices[0].message.content
     st.session_state["messages"].append({"role": "assistant", "content": response})
     # Extraer JSON del pedido confirmado
-    order_json = extract_order_json(response)
-    st.markdown(order_json)
+    #order_json = extract_order_json(response)
+    #st.markdown(order_json)
     # Registrar en log en formato JSON puro
-    logging.info(json.dumps(order_json, indent=4) if order_json else '{}')
+    #logging.info(json.dumps(order_json, indent=4) if order_json else '{}')
     return response
 
 # Ajustar el tono del bot

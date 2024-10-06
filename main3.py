@@ -161,9 +161,9 @@ def generate_response(prompt, temperature=0,max_tokens=1000):
     st.markdown(order_json)
     # Registrar en log en formato JSON puro
     if all(value is not None for value in order_json.values()):
-            logging.info(json.dumps(order_json, indent=4) if order_json else '{}')
-        else:
-            return {} 
+        logging.info(json.dumps(order_json, indent=4) if order_json else '{}')
+    else:
+        return {} 
     #logging.info(json.dumps(order_json, indent=4) if order_json else '{}')
     return response
 

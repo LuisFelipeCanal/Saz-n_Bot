@@ -105,9 +105,9 @@ def get_system_prompt(menu, distritos):
     El monto total del pedido no acepta descuentos ni rectificaciones del precio. 
 
     Pregunta al cliente: "¿Estás de acuerdo con el pedido?" y espera su respuesta. 
-    Una vez que confirme, pregunta: "¿Cuál es tu método de pago? ¿Deseas pagar con tarjeta de crédito, efectivo o algún otro método?". 
+    Una vez que confirme, pregunta: "¿Cuál es tu método de pago? ¿Deseas pagar con tarjeta, efectivo o algún otro método?". 
     Recuerda verificar que metodo de pago haya sido ingresado.
-    Una vez que el cliente confirme el pedido, registra la hora actual de Perú como el timestamp {hora_lima} de la confirmación. 
+    Una vez que el cliente confirme el pedido, registra la hora actual de Perú como el timestamp {hora_lima} de la confirmacion. 
     El pedido confirmado será:\n
     {display_confirmed_order([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0}])}\n
     Recuerda verificar que el pedido sea correcto antes de registrarlo.

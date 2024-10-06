@@ -116,7 +116,9 @@ def get_system_prompt(menu, distritos):
 def extract_order_json(response):
     """Extrae el pedido confirmado en formato JSON desde la respuesta del bot solo si todos los campos tienen valores completos."""
     prompt = (
-        f"Extrae la información del pedido confirmado en formato JSON de la siguiente respuesta: '{response}'. Solo devuelve el formato JSON en un diccionario sin texto adicional y con lo datos completos incluido los campos de metodo_pago y timestamp_confirmacion, si no esta uno de estos campos o que sean null retornar [] vez del JSON sin texto adicional"
+        f"Extrae la información del pedido confirmado en formato JSON de la siguiente respuesta: '{response}'. "
+        "Solo devuelve el formato JSON en un diccionario sin texto adicional y con los datos completos, incluyendo los campos de metodo_pago y timestamp_confirmacion. "
+        "Si uno de estos campos es null o no está presente, devuelve []."
     )
     
     extraction = client.chat.completions.create(
@@ -130,9 +132,18 @@ def extract_order_json(response):
         stream=False,
     )
 
-    # Procesa la respuesta para devolver solo el JSON completo o el mensaje de confirmación
     response_content = extraction.choices[0].message.content
-    return response_content  # Devuelve el JSON completo
+    try:
+        # Intenta cargar como JSON
+        json_data = json.loads(response_content)
+        if json_data:  # Asegurarse de que no esté vacío
+            return json_data
+    except json.JSONDecodeError:
+        pass
+    
+    return []
+
+
 
 
 def generate_response(prompt, temperature=0,max_tokens=1000):
@@ -148,10 +159,11 @@ def generate_response(prompt, temperature=0,max_tokens=1000):
     )
     response = completion.choices[0].message.content
     st.session_state["messages"].append({"role": "assistant", "content": response})
-    # Extraemos el JSON del pedido confirmado
+    # Extraer JSON del pedido confirmado
     order_json = extract_order_json(response)
-    log_json = json.dumps(order_json, indent=4)
-    logging.info(f"Pedido confirmado en formato JSON: {order_json}")
+    
+    # Registrar en log
+    logging.info(f"Pedido confirmado en formato JSON: {json.dumps(order_json, indent=4) if order_json else '[]'}")
     return response
 
 # Ajustar el tono del bot

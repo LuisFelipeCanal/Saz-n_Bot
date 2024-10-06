@@ -146,7 +146,7 @@ def extract_order_json(response):
                 order_json[key] = None  # Asignar null (None en Python)
 
         # Verifica que todas las claves en order_json tengan valores no nulos
-        if all(order_json[key] is not None for key in expected_keys):
+        if all(order_json[key] is not None for key in order_json):
             return order_json
         
         return {}  # Retorna un dict vacío si alguna clave tiene valor nulo

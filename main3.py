@@ -2,7 +2,8 @@ import pandas as pd
 import streamlit as st
 from datetime import datetime
 from copy import deepcopy
-from groq import Groq
+#from groq import Groq
+from openai import OpenAI
 import csv
 import re
 import pytz
@@ -11,7 +12,8 @@ import logging
 # Configura el logger
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 # Inicializar el cliente de Groq con la clave API
-client = Groq(api_key=st.secrets["GROQ_API_KEY"])
+#client = Groq(api_key=st.secrets["GROQ_API_KEY"])
+client= OpenAI(api_key=st.secrets["API_KEY"])
 
 # Configuración inicial de la página
 st.set_page_config(page_title="SazónBot", page_icon=":pot_of_food:")

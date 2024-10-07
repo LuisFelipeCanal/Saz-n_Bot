@@ -140,7 +140,7 @@ def extract_order_json(response):
             {"role": "system", "content": "Eres un asistente que solo responde en JSON. Responde únicamente con un JSON o un diccionario vacio."},
             {"role": "user", "content": prompt}
         ],
-        model="mixtral-8x7b-32768",
+        model="gemma2-9b-it",
         temperature=0,
         max_tokens=300,
         top_p=1,
@@ -183,7 +183,7 @@ def generate_response(prompt, temperature=0,max_tokens=1000):
     st.session_state["messages"].append({"role": "user", "content": prompt})
 
     completion = client.chat.completions.create(
-        model="mixtral-8x7b-32768",
+        model="gemma2-9b-it",
         messages=st.session_state["messages"],
         temperature=temperature,
         max_tokens=max_tokens,

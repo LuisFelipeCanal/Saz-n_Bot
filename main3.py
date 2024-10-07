@@ -142,7 +142,7 @@ def extract_order_json(response):
         ],
         model="llama3-8b-8192",
         temperature=0,
-        max_tokens=1000,
+        max_tokens=300,
         top_p=1,
         stop=None,
         stream=False,

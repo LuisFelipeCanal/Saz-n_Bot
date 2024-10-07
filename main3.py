@@ -3,7 +3,7 @@ import streamlit as st
 from datetime import datetime
 from copy import deepcopy
 #from groq import Groq
-import openai
+#import openai
 from openai import OpenAI
 import csv
 import re

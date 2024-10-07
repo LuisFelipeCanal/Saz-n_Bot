@@ -99,7 +99,7 @@ def display_confirmed_order(order_details):
 ##Pendiente
 
 
-def get_system_prompt(menu, distritos,postres,bebidas):
+def get_system_prompt(menu, distritos):
     """Definir el prompt del sistema para el bot de Sazón incluyendo el menú y distritos."""
     lima_tz = pytz.timezone('America/Lima') # Define la zona horaria de Lima
     hora_lima = datetime.now(lima_tz).strftime("%Y-%m-%d %H:%M:%S") # Obtiene la hora actual en Lima
@@ -211,7 +211,7 @@ def adjust_tone(tone="friendly"):
 
         
 initial_state = [
-    {"role": "system", "content": get_system_prompt(menu,distritos,postres,bebidas)},
+    {"role": "system", "content": get_system_prompt(menu,distritos)},
     {
         "role": "assistant",
         "content": f"¿Qué te puedo ofrecer?\n\nEste es el menú del día:\n\n{format_menu(menu)}",

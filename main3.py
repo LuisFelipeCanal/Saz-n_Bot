@@ -118,11 +118,10 @@ def get_system_prompt(menu, distritos):
     |           |              |                  |\n
     | **Total** |              | **S/ 0.00**      |\n
     El monto total del pedido no acepta descuentos ni rectificaciones del precio.
-    
-    Asegúrate de calcular el precio total sumando los precios de todos los platos pedidos multiplicados por su cantidad. 
+     
     Pregunta al cliente si desea agregar una bebida o postre a su pedido. Si responde bebida, muéstrale solo la carta de bebidas {display_bebida(bebidas)} y si responde postre muéstrale solo la carta de postres {display_postre(postres)}.
     
-    Si el cliente agregó postres o bebidas, agrégalo al pedido.
+    Si el cliente agregó postres o bebidas, agrégalo al pedido ya sea el postre o bebida con su respectivo precio total.
     
     Una vez que el cliente confirme el pedido, registra la hora actual de Perú como el timestamp {hora_lima} de la confirmacion. 
     El pedido confirmado será:\n

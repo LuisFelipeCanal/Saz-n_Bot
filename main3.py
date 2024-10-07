@@ -71,7 +71,7 @@ def display_postre(postre):
     """Mostrar el menú con descripciones."""
     postre_text = "Aquí está lista de postres:\n"
     for index, row in postre.iterrows():
-        postre_text += f"{row['Postre']}: {row['Descripción']} - {row['Precio']} soles\n"
+        postre_text += f"{row['Postres']}: {row['Descripción']} - {row['Precio']} soles\n"
     return postre_text
 
 def display_bebida(bebida):
@@ -103,7 +103,6 @@ def get_system_prompt(menu, distritos,postres,bebidas):
     """Definir el prompt del sistema para el bot de Sazón incluyendo el menú y distritos."""
     lima_tz = pytz.timezone('America/Lima') # Define la zona horaria de Lima
     hora_lima = datetime.now(lima_tz).strftime("%Y-%m-%d %H:%M:%S") # Obtiene la hora actual en Lima
-    pedido={}
     system_prompt = f"""
     Eres el bot de pedidos de Sazón. Ayudas a los clientes a hacer sus pedidos y siempre 
     eres bien amable. Aquí tienes el menú para que se lo muestres a los clientes:\n{display_menu(menu)}\n

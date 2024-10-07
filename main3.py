@@ -3,6 +3,7 @@ import streamlit as st
 from datetime import datetime
 from copy import deepcopy
 #from groq import Groq
+import openai
 from openai import OpenAI
 import csv
 import re
@@ -13,7 +14,9 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 # Inicializar el cliente de Groq con la clave API
 #client = Groq(api_key=st.secrets["GROQ_API_KEY"])
-client= OpenAI(api_key=st.secrets['OPENAI_API_KEY'])
+client = OpenAI(
+	api_key=st.secrets['OPENAI_API_KEY']
+)
 
 # Configuración inicial de la página
 st.set_page_config(page_title="SazónBot", page_icon=":pot_of_food:")
@@ -142,14 +145,14 @@ def extract_order_json(response):
             {"role": "system", "content": "Eres un asistente que solo responde en JSON. Responde únicamente con un JSON o un diccionario vacio."},
             {"role": "user", "content": prompt}
         ],
-        model="gemma2-9b-it",
+        model="gpt-3.5-turbo",
         temperature=0,
         max_tokens=300,
         top_p=1,
         stop=None,
         stream=False,
     )
-
+#"gemma2-9b-it"
     response_content = extraction.choices[0].message.content
     
     # Intenta cargar como JSON
@@ -185,7 +188,7 @@ def generate_response(prompt, temperature=0,max_tokens=1000):
     st.session_state["messages"].append({"role": "user", "content": prompt})
 
     completion = client.chat.completions.create(
-        model="gemma2-9b-it",
+        model="gpt-3.5-turbo",
         messages=st.session_state["messages"],
         temperature=temperature,
         max_tokens=max_tokens,

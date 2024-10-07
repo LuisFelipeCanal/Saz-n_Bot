@@ -84,8 +84,8 @@ def display_bebida(bebida):
 # Cargar el menú y distritos
 menu = load("carta.csv")
 distritos = load("distritos.csv")
-postres= load("Bebidas_del_restaurante.csv")
-bebidas= load("Postres_del_Restaurante.csv")
+postres= load("Bebidas.csv")
+bebidas= load("Postres.csv")
 
 def display_confirmed_order(order_details):
     """Genera una tabla en formato Markdown para el pedido confirmado."""

@@ -119,8 +119,8 @@ def get_system_prompt(menu, distritos):
     | **Total** |              | **S/ 0.00**      |\n
     El monto total del pedido no acepta descuentos ni rectificaciones del precio.
     
-    Preguntale al cliente si desea agregar una bebida o postre a su pedido. Si responde bebida muestrale solo la carta de bebidas {display_bebida(bebidas)} y si responde postre muestrale solo la carta de postres {display_postre(postres)}
-    
+    Antes de confirmar preguntale al cliente si desea agregar una bebida o postre a su pedido. Si responde bebida muestrale solo la carta de bebidas {display_bebida(bebidas)} y si responde postre muestrale solo la carta de postres {display_postre(postres)}
+    Si el cliente agrego postres o bebidas agregalo al pedido.
     Pregunta al cliente: "¿Estás de acuerdo con el pedido?" y espera su respuesta. 
     Una vez que confirme, pregunta: "¿Cuál es tu método de pago? ¿Deseas pagar con tarjeta, efectivo o algún otro método?". 
     

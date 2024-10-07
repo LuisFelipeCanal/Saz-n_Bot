@@ -13,7 +13,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 # Inicializar el cliente de Groq con la clave API
 #client = Groq(api_key=st.secrets["GROQ_API_KEY"])
-client= OpenAI(api_key=st.secrets["API_KEY"])
+client= OpenAI(api_key=st.secrets['OPENAI_API_KEY'])
 
 # Configuración inicial de la página
 st.set_page_config(page_title="SazónBot", page_icon=":pot_of_food:")

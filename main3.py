@@ -148,7 +148,7 @@ def get_system_prompt(menu, distritos):
     	{display_confirmed_order([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0}])}\n
 	- *Método de pago*: el método que el cliente eligió.
 	- *Lugar de entrega*: el distrito de entrega o indica que recogerá en el local.
-	- *Timestamp Confirmacion*: el valor '{hora_lima}' que es la hora exacta de confirmación del pedido.
+	- *Timestamp Confirmacion*: hora exacta de confirmación del pedido, el valor '{hora_lima}'.
          
     Recuerda siempre confirmar que el pedido, el metodo de pago y el lugar de entrega estén hayan sido ingresados, completos y correctos antes de registrarlo.
     """

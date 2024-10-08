@@ -112,11 +112,10 @@ def get_system_prompt(menu, distritos):
     Primero, saluda al cliente y ofrécele el menú. Asegúrate de que el cliente solo seleccione platos que están en el menú actual y explícales que no podemos preparar platos fuera del menú.
     El cliente puede indicar la cantidad en texto o en números.
     **IMPORTANTE: Validación de cantidad solicitada**
-    	1. Extrae la cantidad del pedido, que puede estar en formato de string (por ejemplo, "10").
-	2. Convierte esa cantidad a un entero.
-	3. Verifica si la cantidad está en el rango de 1 a 100.
-	4. Si la cantidad es válida (es decir, está entre 1 y 100), responde: "Has pedido {cantidad} unidades.".
-	5. Si la cantidad no es válida, responde: "La cantidad debe estar entre 1 y 100. Por favor, intenta de nuevo.".
+    	Extrae la cantidad del pedido, que puede estar en formato de string (por ejemplo, "10").Convierte esa cantidad a un entero.
+	Verifica si la cantidad está en el rango de 1 a 100.
+	Si la cantidad es válida (es decir, está entre 1 y 100), responde: "Has pedido {cantidad} unidades.".
+	Si la cantidad no es válida, responde: "La cantidad debe estar entre 1 y 100. Por favor, intenta de nuevo.".
     
     Después de que el cliente haya seleccionado sus platos, pregunta si desea recoger su pedido en el local o si prefiere entrega a domicilio.
      - Si elige entrega, pregúntale al cliente a qué distrito desea que se le envíe su pedido, confirma que el distrito esté dentro de las zonas de reparto y verifica el distrito de entrega con el cliente.

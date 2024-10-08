@@ -145,7 +145,7 @@ def get_system_prompt(menu, distritos):
    
 def extract_order_json(response):
     """Extrae el pedido confirmado en formato JSON desde la respuesta del bot solo si todos los campos tienen valores completos."""
-     prompt = f"""
+    prompt = f"""
     	Extrae únicamente la información visible y explícita del pedido confirmado de la siguiente respuesta: '{response}'.
     	Si el pedido está confirmado en el texto, devuelve el resultado en formato JSON con las siguientes claves:
     	- 'Platos': una lista de platos donde cada plato incluye su cantidad y precio_total.

@@ -156,6 +156,8 @@ def extract_order_json(response):
     	- 'Total': el monto total del pedido.
     	- 'metodo de pago': el metodo de pago del pedido.
     	- 'lugar_entrega': el lugar de entrega del pedido.
+             Si el usuario indicó que recogerá el pedido, especifica 'UPCH123' como el lugar de entrega. 
+             Si el usuario mencionó un distrito, indícalo como el lugar de entrega.
     	- 'timestamp_confirmacion': tiempo del momento en que se confirma el pedido.
 
     	Si algún campo como 'metodo de pago', 'lugar_entrega' o 'timestamp_confirmacion' no aparece explícitamente en la respuesta del cliente, asigna el valor null a ese campo.

@@ -143,7 +143,7 @@ def get_system_prompt(menu, distritos):
     El pedido confirmado será:\n
     {display_confirmed_order([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0}])}\n
     
-    Recuerda siempre confirmar que el pedido, el método de pago y el lugar de entrega estén completos y correctos antes de registrarlo.
+    Recuerda siempre confirmar que el pedido, el método de pago y el lugar de entrega del pedido estén completos y correctos antes de registrarlo.
     """
     return system_prompt.replace("\n", " ")
    
@@ -155,7 +155,7 @@ def extract_order_json(response):
     	- 'Platos': una lista de platos donde cada plato incluye su cantidad y precio_total.
     	- 'Total': el monto total del pedido.
     	- 'metodo de pago': el método de pago elegido por el cliente.
-    	- 'lugar_entrega': el lugar de entrega especificado (en la dirección del local o en el distrito indicado por el cliente).
+    	- 'lugar_entrega': el lugar de entrega en la dirección del local o en el distrito indicado por el cliente.
     	- 'timestamp_confirmacion': la marca de tiempo del momento en que se confirma el pedido.
 
     	Si algún campo como 'metodo de pago', 'lugar_entrega' o 'timestamp_confirmacion' no aparece explícitamente en la respuesta del cliente, asigna el valor null a ese campo.

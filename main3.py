@@ -172,7 +172,7 @@ def extract_order_json(response):
             {"role": "user", "content": prompt}
         ],
         model="gpt-3.5-turbo",
-        temperature=0,
+        temperature=0.5,
         max_tokens=300,
         top_p=1,
         stop=None,

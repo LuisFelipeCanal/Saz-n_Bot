@@ -114,7 +114,7 @@ def get_system_prompt(menu, distritos):
     Luego, pregunta si quiere recoger su pedido en el local o si prefiere que lo enviemos a domicilio. 
     Asegúrate de usar solo español peruano en tus respuestas, evitando cualquier término como preferís debe ser prefiere. 
     Si el pedido es para entrega, asegúrate de que el distrito esté disponible y confirma con el cliente el distrito de entrega. 
-    Si el pedido es para recoger, invitalo a acercarse a nuestro local ubicado en UPCH123.Asegúrate que el cliente haya ingresado el método de pedido antes de continuar. Después, resume 
+    Si el pedido es para recoger, invitalo a acercarse a nuestro local ubicado en UPCH123.Verifica que el cliente haya ingresado el método de pedido antes de continuar. Después, resume 
     el pedido en la siguiente tabla:\n
     | **Plato** | **Cantidad** | **Precio Total** |\n
     |-----------|--------------|------------------|\n
@@ -125,9 +125,8 @@ def get_system_prompt(menu, distritos):
     Pregunta al cliente si desea agregar una bebida o postre a su pedido. Si responde bebida, muéstrale solo la carta de bebidas {display_bebida(bebidas)} y si responde postre muéstrale solo la carta de postres {display_postre(postres)}.
     
     Si el cliente agregó postres o bebidas, agrégalo a la tabla de resumen como si fuera un plato más.Olvídate de los subtotales y vuelve a calcular el monto total de forma precisa.El monto total del pedido no acepta descuentos ni rectificaciones del precio.
-    Si el cliente no quiere agregar otro plato,postre o bebida, pregunta: "¿Cuál es tu metodo de pago? ¿Deseas pagar con tarjeta de credito, efectivo o algún otro metodo?".
-    Asegúrate que el cliente haya ingresado el metodo de pago antes de continuar.
     Pregunta al cliente: "¿Estás de acuerdo con el pedido?" y espera su respuesta. 
+    Una vez que confirme, pregunta: "¿Cuál es tu método de pago? ¿Deseas pagar con tarjeta de crédito, efectivo o algún otro método?". Asegúrate que el cliente haya ingresado el metodo de pago.
     Luego, registra la hora actual de Perú como el timestamp {hora_lima} de la confirmacion. 
     El pedido confirmado será:\n
     {display_confirmed_order([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0}])}\n
@@ -137,12 +136,12 @@ def get_system_prompt(menu, distritos):
    
 def extract_order_json(response):
     """Extrae el pedido confirmado en formato JSON desde la respuesta del bot solo si todos los campos tienen valores completos."""
-    prompt = f"Extrae la información del pedido confirmado de la siguiente respuesta: '{response}'. Si el pedido está confirmado, proporciona una salida en formato JSON con las siguientes claves: 'Platos' (contiene los platos, cada uno con su cantidad y precio_total), 'Total', 'metodo de pago', 'lugar_entrega', y 'timestamp_confirmacion'. Si algún campo como 'metodo de pago' o 'lugar_entrega'o 'timestamp_confirmacion' no está presente, asígnale el valor null. Si el pedido no está confirmado, devuelve un diccionario vacio."
+    prompt = f"Extrae la información del pedido confirmado solo de la siguiente respuesta: '{response}'. Si el pedido está confirmado, proporciona una salida en formato JSON con las siguientes claves: 'Platos' (contiene los platos, cada uno con su cantidad y precio_total), 'Total', 'metodo de pago', 'lugar_entrega', y 'timestamp_confirmacion'. Si algún campo como 'metodo de pago' o 'lugar_entrega'o 'timestamp_confirmacion' no está presente, asígnale el valor null. Si el pedido no está confirmado, devuelve un diccionario vacio."
     #prompt = f"Extrae la información del pedido de la siguiente respuesta: '{response}'. Si el pedido está confirmado proporciona una salida en formato JSON con las claves: Platos(contine los platos con la cantidad y precio_total),Total,metodo de pago,lugar_entrega y timestamp_confirmacion. Si el pedido no está confirmado devuelve una diccionario vacio."
 
     extraction = client.chat.completions.create(
         messages=[
-            {"role": "system", "content": "Eres un asistente que solo responde en JSON. Responde únicamente con un JSON o un diccionario vacio."},
+            {"role": "system", "content": "Eres un asistente extrae el pedido confirmado en JSON. Responde únicamente con un JSON o un diccionario vacio."},
             {"role": "user", "content": prompt}
         ],
         model="gpt-3.5-turbo",

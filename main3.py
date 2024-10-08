@@ -145,12 +145,25 @@ def get_system_prompt(menu, distritos):
    
 def extract_order_json(response):
     """Extrae el pedido confirmado en formato JSON desde la respuesta del bot solo si todos los campos tienen valores completos."""
-    prompt = f"Extrae la información del pedido confirmado solo de la siguiente respuesta: '{response}'. Si el pedido está confirmado, proporciona una salida en formato JSON con las siguientes claves: 'Platos' (contiene los platos, cada uno con su cantidad y precio_total), 'Total', 'metodo de pago', 'lugar_entrega', y 'timestamp_confirmacion'. Si algún campo como 'metodo de pago' o 'lugar_entrega'o 'timestamp_confirmacion' no está presente, asígnale el valor null. Si el pedido no está confirmado, devuelve un diccionario vacio."
+     prompt = f"""
+    	Extrae únicamente la información visible y explícita del pedido confirmado de la siguiente respuesta: '{response}'.
+    	Si el pedido está confirmado en el texto, devuelve el resultado en formato JSON con las siguientes claves:
+    	- 'Platos': una lista de platos donde cada plato incluye su cantidad y precio_total.
+    	- 'Total': el monto total del pedido.
+    	- 'metodo de pago': el método de pago elegido por el cliente.
+    	- 'lugar_entrega': el lugar de entrega especificado por el cliente.
+    	- 'timestamp_confirmacion': la marca de tiempo del momento en que se confirma el pedido.
+
+    	Si algún campo como 'metodo de pago', 'lugar_entrega' o 'timestamp_confirmacion' no aparece explícitamente en la respuesta del cliente, asigna el valor null a ese campo.
+
+    	Si el pedido no está confirmado explícitamente en la respuesta, devuelve un diccionario vacío.
+    	No generes, interpretes, ni asumas valores que no estén presentes en la respuesta."""
+    #prompt = f"Extrae la información del pedido confirmado solo de la siguiente respuesta: '{response}'. Si el pedido está confirmado, proporciona una salida en formato JSON con las siguientes claves: 'Platos' (contiene los platos, cada uno con su cantidad y precio_total), 'Total', 'metodo de pago', 'lugar_entrega', y 'timestamp_confirmacion'. Si algún campo como 'metodo de pago' o 'lugar_entrega'o 'timestamp_confirmacion' no está presente, asígnale el valor null. Si el pedido no está confirmado, devuelve un diccionario vacio."
     #prompt = f"Extrae la información del pedido de la siguiente respuesta: '{response}'. Si el pedido está confirmado proporciona una salida en formato JSON con las claves: Platos(contine los platos con la cantidad y precio_total),Total,metodo de pago,lugar_entrega y timestamp_confirmacion. Si el pedido no está confirmado devuelve una diccionario vacio."
 
     extraction = client.chat.completions.create(
         messages=[
-            {"role": "system", "content": "Eres un asistente extrae el pedido confirmado en JSON. Responde únicamente con un JSON o un diccionario vacio."},
+            {"role": "system", "content": "Eres un asistente que extrae el pedido confirmado en JSON únicamente con datos explícitos. Responde solo con un JSON o un diccionario vacío."},
             {"role": "user", "content": prompt}
         ],
         model="gpt-3.5-turbo",

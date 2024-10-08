@@ -137,9 +137,9 @@ def get_system_prompt(menu, distritos):
 
     Si el cliente agrega más ítems, actualiza la tabla de resumen del pedido, recalculando el monto total con precisión.
 
-    Al final, pregúntale al cliente: "¿Estás de acuerdo con el pedido?" y espera su confirmación.
+    Antes de terminar, pregúntale al cliente: "¿Estás de acuerdo con el pedido?" y espera su confirmación.
 
-    *Después de que el cliente confirme el pedido, preguntale al cliente el método de pago (tarjeta, efectivo, Yape u otra opción disponible)*.Verifica que el cliente haya ingresado un método de pago antes de continuar.
+    Después de que el cliente confirme el pedido, solicita al cliente el método de pago (tarjeta, efectivo, Yape u otra opción disponible)*.Verifica que el cliente haya ingresado un método de pago antes de continuar.
    
     Luego de verificar el método de pago, confirma el pedido al cliente incluyendo todos los detalles. Incluye explícitamente:
     	El pedido confirmado será:\n

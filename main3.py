@@ -307,7 +307,7 @@ if prompt := st.chat_input():
     # Verificar si el contenido es inapropiado
     if check_for_inappropriate_content(prompt):
         with st.chat_message("assistant", avatar="👨‍🍳"):
-            st.markdown("Por favor, mantengamos la conversación respetuosa.")
+            st.markdown("Por favor, mantengamos la conversación respetuosa. ¿Te gustaría ver el menú?")
 		
     else:
         with st.chat_message("user", avatar="👤"):

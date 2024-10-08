@@ -126,7 +126,8 @@ def get_system_prompt(menu, distritos):
     
     Si el cliente agregó postres o bebidas, agrégalo a la tabla de resumen como si fuera un plato más.Olvídate de los subtotales y vuelve a calcular el monto total de forma precisa.El monto total del pedido no acepta descuentos ni rectificaciones del precio.
     Pregunta al cliente: "¿Estás de acuerdo con el pedido?" y espera su respuesta. 
-    Una vez que confirme, pregunta: "¿Cuál es tu método de pago? ¿Deseas pagar con tarjeta de crédito, efectivo o algún otro método?". Asegúrate que el cliente haya ingresado el metodo de pago.
+    Una vez que confirme, pregunta: "¿Cuál es tu método de pago? ¿Deseas pagar con tarjeta de crédito, efectivo o algún otro método?". 
+    Antes de confirmar el pedido asegúrate que el cliente haya ingresado el metodo de pago.
     Luego, registra la hora actual de Perú como el timestamp {hora_lima} de la confirmacion. 
     El pedido confirmado será:\n
     {display_confirmed_order([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0}])}\n

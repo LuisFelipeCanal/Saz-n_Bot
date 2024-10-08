@@ -267,7 +267,7 @@ initial_state = [
     {"role": "system", "content": get_system_prompt(menu,distritos)},
     {
         "role": "assistant",
-        "content": f"¿Qué te puedo ofrecer?\n\nEste es el menú del día:\n\n{format_menu(menu)}",
+        "content": f"¡Hola! Bienvenido a Sazón Bot. Este es el menú del día:\n\n{format_menu(menu)}\n\n¿Qué te puedo ofrecer?",,
     },
 ]
 

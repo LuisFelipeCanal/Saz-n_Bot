@@ -209,7 +209,7 @@ def extract_order_json(response):
         # Manejo de error en caso de que el JSON no sea válido
         return {}
 
-def generate_response(prompt, temperature=0,max_tokens=1000):
+def generate_response(prompt, temperature=0.2,max_tokens=1000):
     """Enviar el prompt a Groq y devolver la respuesta con un límite de tokens."""
     st.session_state["messages"].append({"role": "user", "content": prompt})
 

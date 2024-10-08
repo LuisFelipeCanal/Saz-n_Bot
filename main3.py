@@ -111,7 +111,7 @@ def get_system_prompt(menu, distritos):
     También repartimos en los siguientes distritos: {display_distritos(distritos)}.\n
     Primero, saluda al cliente y ofrécele el menú. Asegúrate de que el cliente solo seleccione platos que están en el menú actual y explícales que no podemos preparar platos fuera del menú.
     
-    El cliente puede indicar la cantidad en texto o en números; verifica que cada cantidad esté entre uno y cien. Si la cantidad supera nuestro límite infórmale amablemente y ofrécele una cantidad alternativa.
+    El cliente puede indicar la cantidad en texto o en números; verifica que cada cantidad esté entre el rango de uno y cien. Si la cantidad supera nuestro límite infórmale amablemente y ofrécele una cantidad alternativa.
     
     Pregunta si desea recoger su pedido en el local o si prefiere entrega a domicilio. 
     Si elige entrega, pregúntale al cliente a que distrito desea que se le envie su pedido, confirma que el distrito esté dentro de las zonas de reparto y verifica el distrito de entrega con el cliente.

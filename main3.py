@@ -113,6 +113,7 @@ def get_system_prompt(menu, distritos):
     **IMPORTANTE: Validación de cantidad solicitada**
     - El cliente puede indicar la cantidad en texto (por ejemplo, "dos") o en números (por ejemplo, "2").
     - Interpreta y extrae las cantidades independientemente de si están en números o en palabras y asócialas con el plato correspondiente.
+    - Por ejemplo, si el cliente escribe "quiero dos arroz con pollo y diez pachamanca de pollo", interpreta esto como "2 unidades de arroz con pollo" y "10 unidades de pachamanca de pollo".
     - Si la cantidad solicitada está en el rango de 1 a 100 (inclusive), acepta el pedido sin mostrar advertencias.
     - Si la cantidad solicitada es mayor que 100, muestra el siguiente mensaje:
       "Lamento informarte que el límite máximo de cantidad por producto es de 100 unidades. Por favor, reduce la cantidad para procesar tu pedido."

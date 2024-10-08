@@ -128,7 +128,7 @@ def get_system_prompt(menu, distritos):
     Pregunta al cliente: "¿Estás de acuerdo con el pedido?" y espera su respuesta. 
     Una vez que confirme, pregunta: "¿Cuál es tu método de pago? ¿Deseas pagar con tarjeta de crédito, efectivo o algún otro método?". 
     Antes de confirmar el pedido asegúrate que el cliente haya ingresado el metodo de pago.
-    Luego, registra la hora actual de Perú como el timestamp {hora_lima} de la confirmacion. 
+    Una vez que el cliente confirme el pedido, registra la hora actual de Perú como el timestamp {hora_lima} de la confirmacion. 
     El pedido confirmado será:\n
     {display_confirmed_order([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0}])}\n
     Recuerda verificar que el pedido sea correcto y el metodo de pago antes de registrarlo.

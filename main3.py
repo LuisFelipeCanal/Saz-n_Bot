@@ -168,7 +168,7 @@ def extract_order_json(response):
 
     extraction = client.chat.completions.create(
         messages=[
-            {"role": "system", "content": "Eres un asistente que extrae el pedido confirmado en JSON únicamente con datos explícitos. Responde solo con un JSON o un diccionario vacío."},
+            {"role": "system", "content": "Eres un asistente que extrae el pedido confirmado en JSON. Responde solo con un JSON o un diccionario vacío."},
             {"role": "user", "content": prompt}
         ],
         model="gpt-3.5-turbo",

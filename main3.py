@@ -244,6 +244,14 @@ def generate_response(prompt, temperature=0,max_tokens=1000):
     logging.info(json.dumps(order_json, indent=4) if order_json else '{}')
     return response
 
+# Función para verificar contenido inapropiado
+def check_for_inappropriate_content(prompt):
+    """Verifica si el prompt contiene contenido inapropiado utilizando la API de Moderación de OpenAI."""
+    response = openai.Moderation.create(input=prompt)
+    if response['results'][0]['flagged']:
+        return True
+    return False
+	
 # Ajustar el tono del bot
 def adjust_tone(tone="friendly"):
     """Ajustar el tono del bot según las preferencias del cliente."""
@@ -284,12 +292,17 @@ for message in st.session_state.messages:
             st.markdown(message["content"])
 
 if prompt := st.chat_input():
-    with st.chat_message("user", avatar="👤"):
-        st.markdown(prompt)
-
-    output = generate_response(prompt)
-    with st.chat_message("assistant", avatar="👨‍🍳"):
-        st.markdown(output)
+    # Verificar si el contenido es inapropiado
+    if check_for_inappropriate_content(prompt):
+        with st.chat_message("assistant", avatar="👨‍🍳"):
+            st.markdown("Por favor, mantengamos la conversación respetuosa.")
+		
+    else:
+        with st.chat_message("user", avatar="👤"):
+            st.markdown(prompt)
+        output = generate_response(prompt)
+        with st.chat_message("assistant", avatar="👨‍🍳"):
+            st.markdown(output)
     
 
 

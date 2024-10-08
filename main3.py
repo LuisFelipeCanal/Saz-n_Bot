@@ -250,7 +250,11 @@ def check_for_inappropriate_content(prompt):
     try:
         response = client.moderations.create(input=prompt)
         logging.info(f"Moderation API response: {response}")
-        if response['results'][0]['flagged']:
+         # Acceso correcto a los resultados de la respuesta de moderación
+        moderation_result = response.results[0]
+        
+        # Verifica si está marcado como inapropiado
+        if moderation_result.flagged:
             return True
         else:
             return False

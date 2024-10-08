@@ -112,7 +112,7 @@ def get_system_prompt(menu, distritos):
     Primero, saluda al cliente y ofrécele el menú. Asegúrate de que el cliente solo seleccione platos que están en el menú actual y explícales que no podemos preparar platos fuera del menú.
     El cliente puede indicar la cantidad en texto o en números.
     **IMPORTANTE: Validación de cantidad solicitada**
-    - Extrae la cantidad solicitada poe el cliente.
+    - Extrae la cantidad solicitada por el cliente y verifica.
     - Si la cantidad solicitada está en el rango de 1 a 100 (inclusive), acepta el pedido sin mostrar advertencias.
     - Si la cantidad solicitada es mayor que 100, muestra el siguiente mensaje:
       "Lamento informarte que el límite máximo de cantidad por producto es de 100 unidades. Por favor, reduce la cantidad para procesar tu pedido."

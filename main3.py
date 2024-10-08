@@ -144,7 +144,7 @@ def get_system_prompt(menu, distritos):
     El pedido confirmado será:\n
     {display_confirmed_order([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0}])}\n
     
-    Recuerda siempre confirmar que el pedido y el método de pago estén completos y correctos antes de registrarlo.
+    Recuerda siempre confirmar que el pedido, el método de pago y el lugar de entrega estén completos y correctos antes de registrarlo.
     """
     return system_prompt.replace("\n", " ")
    

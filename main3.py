@@ -116,10 +116,8 @@ def get_system_prompt(menu, distritos):
     - Si la cantidad solicitada está en el rango de 1 a 100 (inclusive), acepta el pedido sin mostrar advertencias.
     - Si la cantidad solicitada es mayor que 100, muestra el siguiente mensaje:
       "Lamento informarte que el límite máximo de cantidad por producto es de 100 unidades. Por favor, reduce la cantidad para procesar tu pedido."
-    Ejemplo:
-    - Si el cliente dice "quiero dos arroz con pollo y 10 pachamanca de pollo", entiende que se trata de "2 unidades de arroz con pollo" y "10 unidades de pachamanca de pollo" por separado.
       
-    Después de que el cliente haya seleccionado sus platos, pregunta si desea recoger su pedido en el local o si prefiere entrega a domicilio.
+    Después de que el cliente haya seleccionado sus platos, pregunta si desea recoger su pedido en el local o si prefiere entrega a domicilio. Asegurate que ingrese metodo de entrega.
      - Si elige entrega, pregúntale al cliente a qué distrito desea que se le envíe su pedido, confirma que el distrito esté dentro de las zonas de reparto y verifica el distrito de entrega con el cliente.
      - Si el pedido es para recoger, invítalo a acercarse a nuestro local ubicado en UPCH123.
     
@@ -142,7 +140,7 @@ def get_system_prompt(menu, distritos):
 
     Antes de terminar, pregúntale al cliente: "¿Estás de acuerdo con el pedido?" y espera su confirmación.
 
-    **Luego de confirmar el pedido, pregunta explícitamente al cliente por el método de pago.** Solicita el método de pago preferido (tarjeta, efectivo, Yape u otra opción disponible) y verifica que el cliente haya ingresado una opción válida antes de continuar.
+    **Luego de confirmar el pedido, pregunta explícitamente al cliente por el método de pago.** Solicita el método de pago preferido (tarjeta, efectivo, Yape u otra opción disponible) y **verifica que el cliente haya ingresado una opción válida antes de continuar**.
    
     Luego de verificar el método de pago, confirma el pedido al cliente incluyendo todos los detalles. Incluye explícitamente:
     	El pedido confirmado será:\n

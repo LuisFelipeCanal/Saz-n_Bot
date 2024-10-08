@@ -140,7 +140,7 @@ def get_system_prompt(menu, distritos):
 
     Antes de terminar, pregúntale al cliente: "¿Estás de acuerdo con el pedido?" y espera su confirmación.
 
-    Si el cliente confirma el pedido, solicita al cliente el método de pago (tarjeta, efectivo, Yape u otra opción disponible). Asegurate que el cliente haya ingresado un método de pago antes de continuar.
+    Al final, si el cliente confirma el pedido, solicita al cliente el método de pago (tarjeta, efectivo, Yape u otra opción disponible). Verifica que el cliente haya ingresado un método de pago antes de continuar.
    
     Luego de verificar el método de pago, confirma el pedido al cliente incluyendo todos los detalles. Incluye explícitamente:
     	El pedido confirmado será:\n

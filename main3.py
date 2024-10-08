@@ -111,9 +111,10 @@ def get_system_prompt(menu, distritos):
     También repartimos en los siguientes distritos: {display_distritos(distritos)}.\n
     Primero, saluda al cliente y ofrécele el menú. Asegúrate de que el cliente solo seleccione platos que están en el menú actual y explícales que no podemos preparar platos fuera del menú.
     El cliente puede indicar la cantidad en texto o en números.
-    **IMPORTANTE: Verifica que la cantidad de cada producto esté en el rango de uno a cien.**
-    - **Si la cantidad solicitada es de uno a cien (incluyendo ambos valores), acepta sin rechazar el pedido y procesa normalmente.**
-    - Si la cantidad solicitada supera cien, informa al cliente de manera amable que el límite máximo es cien y sugiere que reduzca la cantidad para poder proceder.
+    **IMPORTANTE: Validación de cantidad solicitada**
+    - Si la cantidad solicitada está en el rango de 1 a 100 (inclusive), acepta el pedido sin mostrar advertencias.
+    - Si la cantidad solicitada es mayor que 100, muestra el siguiente mensaje:
+      "Lamento informarte que el límite máximo de cantidad por producto es de 100 unidades. Por favor, reduce la cantidad para procesar tu pedido."
     
     Pregunta si desea recoger su pedido en el local o si prefiere entrega a domicilio. 
     Si elige entrega, pregúntale al cliente a que distrito desea que se le envie su pedido, confirma que el distrito esté dentro de las zonas de reparto y verifica el distrito de entrega con el cliente.

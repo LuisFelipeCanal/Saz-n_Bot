@@ -171,7 +171,7 @@ def extract_order_json(response):
             {"role": "user", "content": prompt}
         ],
         model="gpt-3.5-turbo",
-        temperature=0.2,
+        temperature=0,
         max_tokens=300,
         top_p=1,
         stop=None,
@@ -208,7 +208,7 @@ def extract_order_json(response):
         # Manejo de error en caso de que el JSON no sea válido
         return {}
 
-def generate_response(prompt, temperature=0.1,max_tokens=1000):
+def generate_response(prompt, temperature=0,max_tokens=1000):
     """Enviar el prompt a Groq y devolver la respuesta con un límite de tokens."""
     st.session_state["messages"].append({"role": "user", "content": prompt})
 

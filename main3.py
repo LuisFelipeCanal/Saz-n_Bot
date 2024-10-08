@@ -67,7 +67,7 @@ def display_distritos(distritos):
     """Mostrar los distritos de reparto disponibles."""
     distritos_text = "Los distritos de reparto son:\n"
     for index, row in distritos.iterrows():
-        distritos_text += f"**{row['Distrito']}**\n"
+        distritos_text += f"*{row['Distrito']}*\n"
     return distritos_text
 
 def display_postre(postre):
@@ -116,9 +116,9 @@ def get_system_prompt(menu, distritos):
     - Si la cantidad solicitada es mayor que 100, muestra el siguiente mensaje:
       "Lamento informarte que el límite máximo de cantidad por producto es de 100 unidades. Por favor, reduce la cantidad para procesar tu pedido."
     
-    Pregunta si desea recoger su pedido en el local o si prefiere entrega a domicilio. 
-    Si elige entrega, pregúntale al cliente a que distrito desea que se le envie su pedido, confirma que el distrito esté dentro de las zonas de reparto y verifica el distrito de entrega con el cliente.
-    Si el pedido es para recoger, invitalo a acercarse a nuestro local ubicado en UPCH123.
+    Después de que el cliente haya seleccionado sus platos, pregunta si desea recoger su pedido en el local o si prefiere entrega a domicilio.
+     - Si elige entrega, pregúntale al cliente a qué distrito desea que se le envíe su pedido, confirma que el distrito esté dentro de las zonas de reparto y verifica el distrito de entrega con el cliente.
+     - Si el pedido es para recoger, invítalo a acercarse a nuestro local ubicado en UPCH123.
     
     Usa solo español peruano en tus respuestas, evitando palabras como "preferís" y empleando "prefiere" en su lugar.
     
@@ -130,19 +130,24 @@ def get_system_prompt(menu, distritos):
     
     Aclara que el monto total del pedido no acepta descuentos ni ajustes de precio.
     
-    Pregunta al cliente si quiere añadir una bebida o postre. 
-    - Si responde bebida, muéstrale únicamente la carta de bebidas {display_bebida(bebidas)}.
-    - Si responde postre, muéstrale solo la carta de postres {display_postre(postres)}.
-    
-    Si el cliente agrega postres o bebidas, incorpóralos en la tabla de resumen como un plato adicional y calcula el monto total nuevamente con precisión.
-    
-    Al final, pregúntale al cliente: "¿Estás de acuerdo con el pedido?" y espera su confirmación. 
-    Después, de que el cliente confirme el pedido, pide al cliente el metodo de pago (tarjeta, efectivo, Yape u otra opción disponible). Verifica que el cliente haya ingresado un método de pago antes de continuar.
-    Luego de verificar el método de pago, confirma el pedido al cliente incluyendo todos los detalles. *Incluye explícitamente el 'Timestamp Confirmacion' con el valor '{hora_lima}' en tu respuesta.* 
-     
-    El pedido confirmado será:\n
-    {display_confirmed_order([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0}])}\n
-    
+    Después, pregunta al cliente si quiere añadir una bebida o postre.
+	- Si responde bebida, muéstrale únicamente la carta de bebidas:{display_bebida(bebidas)}
+	- Si responde postre, muéstrale solo la carta de postres:{display_postre(postres)}
+    *Después de que el cliente agrega bebidas o postres, pregúntale si desea agregar algo más.* Si el cliente desea agregar más platos, bebidas o postres, permite que lo haga. Si no desea agregar más, continúa con el proceso.
+
+    Si el cliente agrega más ítems, actualiza la tabla de resumen del pedido, recalculando el monto total con precisión.
+
+    Al final, pregúntale al cliente: "¿Estás de acuerdo con el pedido?" y espera su confirmación.
+
+    Después de que el cliente confirme el pedido, solicita al cliente el método de pago (tarjeta, efectivo, Yape u otra opción disponible).Verifica que el cliente haya ingresado un método de pago antes de continuar.
+   
+    Luego de verificar el método de pago, confirma el pedido al cliente incluyendo todos los detalles. Incluye explícitamente:
+    	El pedido confirmado será:\n
+    	{display_confirmed_order([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0}])}\n
+	- *Método de pago*: el método que el cliente eligió.
+	- *Lugar de entrega*: el distrito de entrega o indica que recogerá en el local.
+	- *Timestamp Confirmacion*: el valor '{hora_lima}'.
+         
     Recuerda siempre confirmar que el pedido, el metodo de pago y el lugar de entrega estén hayan sido ingresados, completos y correctos antes de registrarlo.
     """
     return system_prompt.replace("\n", " ")

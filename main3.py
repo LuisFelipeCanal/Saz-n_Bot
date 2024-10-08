@@ -247,7 +247,7 @@ def generate_response(prompt, temperature=0,max_tokens=1000):
 # Función para verificar contenido inapropiado
 def check_for_inappropriate_content(prompt):
     """Verifica si el prompt contiene contenido inapropiado utilizando la API de Moderación de OpenAI."""
-    response = openai.Moderation.create(input=prompt)
+    response = client.moderations.create(input=prompt)
     if response['results'][0]['flagged']:
         return True
     return False

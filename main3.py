@@ -199,8 +199,8 @@ def extract_order_json(response):
     # Intenta cargar como JSON
     try:
         order_json = json.loads(response_content)
-        st.markdown(order_json)
-        st.markdown(type(order_json))
+        #st.markdown(order_json)
+        #st.markdown(type(order_json))
         # Verifica si el JSON es un diccionario
         if isinstance(order_json, dict):
             if all(order_json[key] not in (None, '', [], {}) for key in order_json):
@@ -239,8 +239,8 @@ def generate_response(prompt, temperature=0,max_tokens=1000):
     st.session_state["messages"].append({"role": "assistant", "content": response})
     # Extraer JSON del pedido confirmado
     order_json = extract_order_json(response)
-    st.markdown(order_json)
-    st.markdown(type(order_json))
+    #st.markdown(order_json)
+    #st.markdown(type(order_json))
     logging.info(json.dumps(order_json, indent=4) if order_json else '{}')
     return response
 

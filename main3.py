@@ -247,11 +247,16 @@ def generate_response(prompt, temperature=0,max_tokens=1000):
 # Función para verificar contenido inapropiado
 def check_for_inappropriate_content(prompt):
     """Verifica si el prompt contiene contenido inapropiado utilizando la API de Moderación de OpenAI."""
-    response = client.moderations.create(input=prompt)
-    logging.info(f"Moderation API response: {response}")
-    if response['results'][0]['flagged']:
-        return True
-    return False
+    try:
+        response = openai.Moderation.create(input=prompt)
+        logging.info(f"Moderation API response: {response}")
+        if response['results'][0]['flagged']:
+            return True
+        else:
+            return False
+    except Exception as e:
+        logging.error(f"Error al llamar a la API de Moderación: {e}")
+        return False
 	
 # Ajustar el tono del bot
 def adjust_tone(tone="friendly"):

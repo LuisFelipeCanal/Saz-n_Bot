@@ -138,7 +138,7 @@ def get_system_prompt(menu, distritos):
     
     Al final, pregúntale al cliente: "¿Estás de acuerdo con el pedido?" y espera su confirmación. 
     Una vez que el cliente confirme el pedido, pide al cliente el metodo de pago (tarjeta de crédito, efectivo u otra opción disponible). Verifica que haya ingresado un metodo de pago antes de continuar.
-    Luego, de confirmar el metodo de pago, registra la hora actual de Perú como el timestamp {hora_lima} de la confirmación. 
+    Luego, de verificar el metodo de pago, registra la hora actual de Perú como el timestamp {hora_lima} de la confirmación. 
      
     El pedido confirmado será:\n
     {display_confirmed_order([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0}])}\n
@@ -155,7 +155,7 @@ def extract_order_json(response):
     	- 'Platos': una lista de platos donde cada plato incluye su cantidad y precio_total.
     	- 'Total': el monto total del pedido.
     	- 'metodo de pago': el método de pago elegido por el cliente.
-    	- 'lugar_entrega': el lugar de entrega en la dirección del local o en el distrito indicado por el cliente.
+    	- 'lugar_entrega': el lugar de entrega (en la dirección del local o en el distrito especificado por el cliente).
     	- 'timestamp_confirmacion': la marca de tiempo del momento en que se confirma el pedido.
 
     	Si algún campo como 'metodo de pago', 'lugar_entrega' o 'timestamp_confirmacion' no aparece explícitamente en la respuesta del cliente, asigna el valor null a ese campo.

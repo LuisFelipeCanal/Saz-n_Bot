@@ -137,8 +137,8 @@ def get_system_prompt(menu, distritos):
     Si el cliente agrega postres o bebidas, incorpóralos en la tabla de resumen como un plato adicional y calcula el monto total nuevamente con precisión.
     
     Al final, pregúntale al cliente: "¿Estás de acuerdo con el pedido?" y espera su confirmación. 
-    Después, de que el cliente confirme el pedido, pide al cliente el metodo de pago (tarjeta, efectivo o yape ). Verifica que haya ingresado un metodo de pago por parte del cliente antes de continuar.
-    Luego, de verificar el metodo de pago, registra la hora actual de Perú como el timestamp {hora_lima} de la confirmación. 
+    Después, de que el cliente confirme el pedido, pide al cliente el metodo de pago (tarjeta, efectivo, Yape u otra opción disponible). Verifica que el cliente haya ingresado un método de pago antes de continuar.
+    Luego de verificar el método de pago, confirma el pedido al cliente incluyendo todos los detalles. *Incluye explícitamente el 'Timestamp Confirmacion' con el valor '{hora_lima}' en tu respuesta.* 
      
     El pedido confirmado será:\n
     {display_confirmed_order([{'Plato': '', 'Cantidad': 0, 'Precio Total': 0}])}\n

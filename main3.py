@@ -154,9 +154,9 @@ def extract_order_json(response):
     	Si el pedido está confirmado en el texto, devuelve el resultado en formato JSON con las siguientes claves:
     	- 'Platos': una lista de platos donde cada plato incluye su cantidad y precio_total.
     	- 'Total': el monto total del pedido.
-    	- 'metodo de pago': el método de pago elegido por el cliente.
-    	- 'lugar_entrega': el lugar de entrega (en la dirección del local o en el distrito especificado por el cliente).
-    	- 'timestamp_confirmacion': la marca de tiempo del momento en que se confirma el pedido.
+    	- 'metodo de pago': el método de pago especificado por el cliente.
+    	- 'lugar_entrega': el lugar de entrega ya sea en la dirección del local o en el distrito especificado por el cliente.
+    	- 'timestamp_confirmacion': tiempo del momento en que se confirma el pedido.
 
     	Si algún campo como 'metodo de pago', 'lugar_entrega' o 'timestamp_confirmacion' no aparece explícitamente en la respuesta del cliente, asigna el valor null a ese campo.
 
